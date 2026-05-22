@@ -10,36 +10,35 @@ When calculating the current trend state or target levels for a specific stock.
 
 ## 1. Quantitative Definitions & Logic
 
-### 🐟 Stage 1: Fish Head (Trend Initiation)
-- **Logic**: Transition from bottom/consolidation to early uptrend.
-- **Conditions**:
-    1. **MA Breakout**: Price ($P$) crosses above short-term Moving Average (e.g., $MA_5$ or $MA_{10}$).
-    2. **MACD Golden Cross**: $DIF$ crosses above the Signal line.
-    3. **Context**: Occurrence typically happens below or near the zero axis.
-- **State**: `FISH_HEAD` (High risk, low confirmation).
+### 📉 Dimension A: Fundamental Valuation (The "Value Filter")
+Based on the Dynamic Net Value model.
+- **UNDERVALUED (低估)**: Price $\le$ Fish Body Baseline ($100\%$).
+- **FAIR (合理)**: Fish Body Baseline $< \text{Price} \le \text{Fish Tail Low } (+15\%)$.
+- **OVERVALUED (高估)**: Price $>$ Fish Tail Low ($+15\%$).
+- **BUBBLE (泡沫)**: Price $\ge$ Fish Bone ($+100\%$).
 
-### 🐟 Stage 2: Fish Body & Bone (Main Trend)
-- **Logic**: Established uptrend with high probability of profit.
-- **Conditions**:
-    1. **Bullish Alignment**: $P > MA_{20} > MA_{60}$ and both slopes $\ge 0$.
-    2. **Trend Strength**: $ADX > 25$ (Confirming strong directional move, not ranging).
-- **The Fish Bone (Defense Line)**:
-    - Defined as the $MA_{20}$ (Monthly Line).
-    - **Defense Condition**: $P \ge MA_{20}$.
-- **State**: `FISH_BODY` (Optimal holding period).
+### 📈 Dimension B: Technical Trend (The "Timing Filter")
+- **FISH_HEAD (Trend Initiation)**:
+    - **Logic**: Transition from bottom to early uptrend.
+    - **Conditions**: Price crosses above $MA_5/MA_{10}$ + MACD Golden Cross.
+- **FISH_BODY (Main Trend)**:
+    - **Logic**: Established uptrend.
+    - **Conditions**: $P > MA_{20} > MA_{60}$ + $ADX > 25$.
+- **FISH_TAIL (Late Trend)**:
+    - **Logic**: Overextended price action.
+    - **Conditions**: $BIAS_{20} > 15-20\%$ + Bearish Divergence.
+- **BONE_BROKEN (Exit Signal)**:
+    - **Condition**: Price closes below $MA_{20}$ and fails to reclaim.
 
-### 🐟 Stage 3: Fish Tail (Late Trend / Blow-off Top)
-- **Logic**: Overextended price action with extreme sentiment.
-- **Conditions**:
-    1. **Excessive Bias (BIAS)**:
-        - Large Cap: $BIAS_{20} > 15\%$.
-        - Small/Mid Cap: $BIAS_{20} > 20\%$.
-    2. **Divergence**: Price makes a new high ($P_{new} > P_{old}$), but RSI or MACD $DIF$ fails to make a new high.
-- **State**: `FISH_TAIL` (High risk, profit-taking zone).
+## 2. Hybrid Investment Matrix (The "Dual-Filter")
 
-### 💀 Bone Break (Exit Signal)
-- **Condition**: Price $P$ closes below $MA_{20}$ and fails to reclaim it within 3 trading days.
-- **Action**: Immediate Exit / Full Clear.
+| Fundamental \ Technical | FISH_HEAD (Initiation) | FISH_BODY (Main Trend) | FISH_TAIL (Late) | BONE_BROKEN (Exit) |
+| :--- | :--- | :--- | :--- | :--- |
+| **UNDERVALUED** | 🚀 **STRONG BUY** | ✅ **ADD/HOLD** | ⚠️ **CAUTION** | ❌ **WAIT** |
+| **FAIR** | ✅ **BUY** | ✅ **HOLD** | ⚠️ **TAKE PROFIT** | ❌ **EXIT** |
+| **OVERVALUED** | ⚠️ **SPECULATIVE** | ⚠️ **TIGHT STOP** | 🚀 **STRONG SELL** | 🚀 **PANIC SELL** |
+| **BUBBLE** | ❌ **AVOID** | 🚀 **STRONG SELL** | 🚀 **STRONG SELL** | 🚀 **PANIC SELL** |
+
 
 ## 2. Execution Workflow
 1. Fetch data via `tw-stock-api-handler`.

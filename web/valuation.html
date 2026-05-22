@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台股估值網格 | Fish-Bone</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 1.5rem; background: #0f172a; color: #e2e8f0; }
+    h1 { font-size: 1.25rem; }
+    .controls { margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center; }
+    input, button { padding: 0.4rem 0.6rem; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: inherit; }
+    button { cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+    th, td { border: 1px solid #334155; padding: 0.35rem 0.5rem; text-align: right; }
+    th { background: #1e293b; text-align: center; }
+    td.label { text-align: left; font-weight: 600; background: #1e293b; }
+    .bg-green { background: #14532d; }
+    .bg-red { background: #7f1d1d; }
+    .signal { margin-top: 1rem; padding: 0.75rem; border-radius: 6px; background: #1e293b; }
+    .error { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <h1>季度估值網格（X：季度 / Y：指標）</h1>
+  <div class="controls">
+    <label>代號 <input id="symbol" value="TEST" /></label>
+    <button id="loadBtn">載入</button>
+  </div>
+  <div id="meta"></div>
+  <table id="grid"><thead></thead><tbody></tbody></table>
+  <div id="signal" class="signal"></div>
+  <script>
+    const apiBase = window.location.origin;
+
+    function cellClass(price, baseline, fishBone) {
+      if (price <= baseline) return 'bg-green';
+      if (price >= fishBone) return 'bg-red';
+      return '';
+    }
+
+    async function load() {
+      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+      const meta = document.getElementById('meta');
+      const signalEl = document.getElementById('signal');
+      meta.textContent = '';
+      signalEl.textContent = '';
+
+      try {
+        const [valRes, sigRes] = await Promise.all([
+          fetch(`${apiBase}/api/valuation/${symbol}`),
+          fetch(`${apiBase}/api/signal/${symbol}`),
+        ]);
+        if (!valRes.ok) throw new Error(await valRes.text());
+        const data = await valRes.json();
+        const v = data.valuation;
+        const zones = v.zones;
+        const price = v.current_price;
+        const baseline = zones.baseline;
+        const fishBone = zones.fish_bone;
+
+        meta.innerHTML = `
+          <p>現價 ${price.toFixed(2)} | 基準 ${baseline.toFixed(2)} |
+          基本面 <strong>${data.fundamental_zone}</strong> |
+          區間 ${v.current_zone}</p>`;
+
+        const quarters = data.quarterly_grid;
+        const headers = quarters.map(q => `${q.year}Q${q.quarter}`);
+        const rows = [
+          ['EPS', quarters.map(q => q.eps)],
+          ['OCI', quarters.map(q => q.oci)],
+          ['其他', quarters.map(q => q.other_items)],
+          ['股息', quarters.map(q => q.dividends)],
+          ['累計淨值', quarters.map(q => q.accumulated_net_value)],
+        ];
+
+        const thead = document.querySelector('#grid thead');
+        const tbody = document.querySelector('#grid tbody');
+        thead.innerHTML = `<tr><th class="label">指標</th>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+        tbody.innerHTML = rows.map(([label, vals]) => {
+          const cls = label === '累計淨值' ? cellClass(price, baseline, fishBone) : '';
+          return `<tr><td class="label">${label}</td>${vals.map(x =>
+            `<td class="${cls}">${Number(x).toFixed(2)}</td>`).join('')}</tr>`;
+        }).join('');
+
+        if (sigRes.ok) {
+          const sig = await sigRes.json();
+          signalEl.innerHTML = `
+            <strong>最終信號：${sig.final_signal}</strong>（${sig.action}）<br/>
+            技術面：${sig.technical_state} | MA20 魚骨：${sig.technical.fish_bone_value.toFixed(2)}
+            | BIAS ${sig.technical.bias.toFixed(1)}% | ADX ${sig.technical.adx.toFixed(1)}`;
+        } else {
+          signalEl.innerHTML = `<span class="error">信號載入失敗</span>`;
+        }
+      } catch (e) {
+        meta.innerHTML = `<p class="error">${e.message}</p>`;
+      }
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', load);
+    load();
+  </script>
+</body>
+</html>

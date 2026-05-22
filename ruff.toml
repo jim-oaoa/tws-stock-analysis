@@ -1,0 +1,9 @@
+line-length = 100
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "W", "I"]
+
+[lint.per-file-ignores]
+"src/valuation/test_valuation.py" = ["E402", "E501", "W291", "W293"]
+"src/valuation/engine.py" = ["W291"]
