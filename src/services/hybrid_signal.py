@@ -17,7 +17,7 @@ from src.valuation.models import (
     TechnicalState,
     TechnicalStateResult,
     ValuationApiResponse,
-    ValuationZone,
+    ValuationZoneLevels,
 )
 
 # Section 3 Truth Table（嚴格對照 CURSOR_IMPLEMENTATION_GUIDE）
@@ -49,7 +49,7 @@ _TRUTH_TABLE: Dict[Tuple[FundamentalZone, TechnicalState], Tuple[FinalSignal, st
 }
 
 
-def determine_fundamental_zone(price: float, zones: ValuationZone) -> FundamentalZone:
+def determine_fundamental_zone(price: float, zones: ValuationZoneLevels) -> FundamentalZone:
     """基本面區間（依 fish-bone-valuation-logic.md Dimension A）。"""
     if price >= zones.fish_bone:
         return FundamentalZone.BUBBLE

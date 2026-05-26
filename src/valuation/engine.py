@@ -198,6 +198,8 @@ def classify_technical_state(
     """
     Classify market state using MA5/10/20/60, MACD, ADX, and BIAS20.
     Returns a TechnicalStateResult.
+
+    Evaluation order: BONE_BROKEN → FISH_TAIL → FISH_BODY → FISH_HEAD
     """
     if len(closes) < 60:
         raise ValueError("At least 60 closing prices are required for technical analysis.")
@@ -220,17 +222,21 @@ def classify_technical_state(
 
     macd_line, signal_line, _ = _macd(closes)
 
-    # Determination logic for TechnicalState
-    if bias20 > _BIAS_THRESHOLD:
-        state = TechnicalState.OVEREXTENDED
+    # Compute prev_close and prev_ma20 for BONE_BROKEN check
+    prev_close = closes[-2] if len(closes) > 1 else price
+    prev_ma20 = ma20_series[-2] if len(ma20_series) > 1 and ma20_series[-2] != 0.0 else ma20
+
+    # Determination logic using new TechnicalState values
+    if price < ma20 and prev_close < prev_ma20:
+        state = TechnicalState.BONE_BROKEN
+    elif bias20 > _BIAS_THRESHOLD:
+        state = TechnicalState.FISH_TAIL
+    elif price > ma20 and ma20 > ma60 and adx > _ADX_THRESHOLD:
+        state = TechnicalState.FISH_BODY
     elif ma5 > ma10 and macd_line[-1] > signal_line[-1]:
         state = TechnicalState.FISH_HEAD
-    elif price < ma20:
-        state = TechnicalState.BEARISH
-    elif price > ma20 and ma20 > ma60 and adx > _ADX_THRESHOLD:
-        state = TechnicalState.BULLISH
     else:
-        state = TechnicalState.NEUTRAL
+        state = TechnicalState.FISH_BODY
 
     return TechnicalStateResult(
         state=state,
@@ -356,3 +362,46 @@ def build_api_response(
         quarterly_grid=grid,
         fundamental_zone=fundamental_zone,
     )
+
+
+# ---------------------------------------------------------------------------
+# ValuationEngine facade class
+# ---------------------------------------------------------------------------
+
+class ValuationEngine:
+    """Facade class providing static methods for the hybrid signal service."""
+
+    @staticmethod
+    def calculate_valuation_zones(net_value: float) -> ValuationZoneLevels:
+        """Derive Fish-Bone price zones from a net_value baseline."""
+        return compute_zones(net_value)
+
+    @staticmethod
+    def calculate_accumulated_net_values(
+        records: List[FinancialQuarterly],
+        initial_net_value: float = 0.0,
+    ) -> List[float]:
+        """Return accumulated net values for each quarter in the grid."""
+        grid = compute_net_value(records, initial_net_value)
+        return [cell.accumulated_net_value for cell in grid]
+
+    @staticmethod
+    def get_full_valuation_state(
+        symbol: str,
+        price: float,
+        financials: List[FinancialQuarterly],
+        initial_net_value: float = 0.0,
+    ) -> ValuationResult:
+        """Run the full fundamental valuation pipeline for a symbol."""
+        sorted_fin = sorted(financials, key=lambda x: (x.year, x.quarter))
+        grid = compute_net_value(sorted_fin, initial_net_value)
+        net_value = grid[-1].accumulated_net_value if grid else initial_net_value
+        zones = compute_zones(net_value)
+        _, current_zone = determine_fundamental_zone(price, zones)
+        return ValuationResult(
+            symbol=symbol,
+            price=price,
+            net_value=net_value,
+            zones=zones,
+            current_zone=current_zone,
+        )

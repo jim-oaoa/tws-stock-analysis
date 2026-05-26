@@ -3,7 +3,7 @@ Valuation Engine Data Models: Enums and Pydantic BaseModels for the Fish-Bone Va
 """
 
 from enum import Enum
-from typing import List
+from typing import List, Union
 from pydantic import BaseModel, Field
 
 
@@ -31,6 +31,9 @@ class FundamentalZone(str, Enum):
 class TechnicalState(str, Enum):
     """Technical market state based on indicators (Trend, Momentum, Strength)."""
     FISH_HEAD = "FISH_HEAD"       # High momentum (MA5 > MA10 & MACD Golden Cross)
+    FISH_BODY = "FISH_BODY"       # Main trend (Price > MA20 > MA60, ADX > 25)
+    FISH_TAIL = "FISH_TAIL"       # Overextended (BIAS20 > 15%)
+    BONE_BROKEN = "BONE_BROKEN"   # Price < MA20 and failed to reclaim
     BULLISH = "BULLISH"
     NEUTRAL = "NEUTRAL"
     BEARISH = "BEARISH"
@@ -44,6 +47,17 @@ class HybridSignal(str, Enum):
     HOLD = "HOLD"
     SELL = "SELL"
     STRONG_SELL = "STRONG_SELL"
+
+
+class FinalSignal(str, Enum):
+    """Expanded final signal set for the truth-table hybrid signal system."""
+    STRONG_BUY = "STRONG_BUY"
+    ADD_HOLD = "ADD_HOLD"
+    BUY = "BUY"
+    HOLD = "HOLD"
+    TIGHT_STOP = "TIGHT_STOP"
+    STRONG_SELL = "STRONG_SELL"
+    EXIT = "EXIT"
 
 
 # ---------------------------------------------------------------------------
@@ -128,7 +142,7 @@ class HybridSignalResult(BaseModel):
     symbol: str
     fundamental_zone: FundamentalZone
     technical_state: TechnicalState
-    final_signal: HybridSignal
+    final_signal: Union[HybridSignal, FinalSignal]
     action: str
     valuation: ValuationResult
     technical: TechnicalStateResult

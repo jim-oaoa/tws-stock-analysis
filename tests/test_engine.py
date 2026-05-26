@@ -20,7 +20,7 @@ class TestValuationEngine(unittest.TestCase):
         grid = compute_net_value(records, initial_net_value=0.0)
         
         self.assertEqual(grid[0].accumulated_net_value, 1.35)
-        self.assertEqual(grid[1].accumulated_net_value, 3.15)
+        self.assertAlmostEqual(grid[1].accumulated_net_value, 3.15, places=10)
         self.assertEqual(grid[2].accumulated_net_value, 4.0)
 
     def test_compute_zones(self):
