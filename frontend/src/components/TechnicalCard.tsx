@@ -12,6 +12,13 @@ const stateColorMap: Record<string, string> = {
   OVEREXTENDED: 'var(--loss)',
 };
 
+const stateLabelMap: Record<string, string> = {
+  BULLISH: '多頭',
+  NEUTRAL: '中性',
+  BEARISH: '空頭',
+  OVEREXTENDED: '過熱',
+};
+
 function getBiasColor(bias: number): { color: string; barColor: string } {
   const absBias = Math.abs(bias);
   if (absBias <= 10) return { color: 'var(--profit)', barColor: 'var(--profit)' };
@@ -21,6 +28,7 @@ function getBiasColor(bias: number): { color: string; barColor: string } {
 
 export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
   const stateColor = stateColorMap[technical.state] || 'var(--text-secondary)';
+  const stateDisplay = stateLabelMap[technical.state] || technical.state?.replace('_', ' ') || '無';
   const biasInfo = getBiasColor(technical.bias);
   const adxTrending = technical.adx > 25;
 
@@ -30,21 +38,21 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
   return (
     <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] p-5 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)] space-y-4">
       <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-        Technical Indicators
+        技術指標
       </h3>
 
       {/* Fish Bone Value */}
       <div className="space-y-1">
-        <div className="text-xs text-[var(--text-secondary)]">Fish Bone Value</div>
+        <div className="text-xs text-[var(--text-secondary)]">魚骨價值</div>
         <div className="text-lg font-bold text-[var(--text-primary)] tabular-nums font-mono">
-          NT$ {technical.fish_bone_value?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? '—'}
+          NT$ {technical.fish_bone_value?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}
         </div>
       </div>
 
       {/* BIAS with progress bar */}
       <div className="space-y-1.5">
         <div className="flex justify-between items-center">
-          <span className="text-xs text-[var(--text-secondary)]">BIAS</span>
+          <span className="text-xs text-[var(--text-secondary)]">乖離率</span>
           <span
             className="text-sm font-bold tabular-nums"
             style={{ color: biasInfo.color }}
@@ -65,7 +73,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
 
       {/* ADX with traffic light */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-[var(--text-secondary)]">ADX</span>
+        <span className="text-xs text-[var(--text-secondary)]">趨向指標</span>
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold tabular-nums text-[var(--text-primary)]">
             {technical.adx?.toFixed(1) ?? '—'}
@@ -73,13 +81,13 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
           <span
             className="inline-block w-2.5 h-2.5 rounded-full"
             style={{ backgroundColor: adxTrending ? 'var(--profit)' : 'var(--text-dim)' }}
-            aria-label={adxTrending ? 'Trending' : 'Ranging'}
+            aria-label={adxTrending ? '趨勢明確' : '盤整中'}
           />
           <span
             className="text-xs font-medium"
             style={{ color: adxTrending ? 'var(--profit)' : 'var(--text-dim)' }}
           >
-            {adxTrending ? 'Trending' : 'Ranging'}
+            {adxTrending ? '趨勢明確' : '盤整中'}
           </span>
         </div>
       </div>
@@ -87,12 +95,12 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
       {/* Technical State */}
       <div className="pt-3 border-t border-[var(--border-default)]">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-[var(--text-secondary)]">State</span>
+          <span className="text-xs text-[var(--text-secondary)]">技術狀態</span>
           <span
             className="text-sm font-semibold"
             style={{ color: stateColor }}
           >
-            {technical.state?.replace('_', ' ') || 'N/A'}
+            {stateDisplay}
           </span>
         </div>
       </div>

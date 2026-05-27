@@ -1,32 +1,36 @@
-export enum ValuationZone {
-  FISH_HEAD = 'FISH_HEAD',
-  FISH_BODY = 'FISH_BODY',
-  FISH_TAIL_LOW = 'FISH_TAIL_LOW',
-  FISH_TAIL_HIGH = 'FISH_TAIL_HIGH',
-  FISH_BONE = 'FISH_BONE',
-}
+export const ValuationZone = {
+  FISH_HEAD: 'FISH_HEAD',
+  FISH_BODY: 'FISH_BODY',
+  FISH_TAIL_LOW: 'FISH_TAIL_LOW',
+  FISH_TAIL_HIGH: 'FISH_TAIL_HIGH',
+  FISH_BONE: 'FISH_BONE',
+} as const;
+export type ValuationZone = (typeof ValuationZone)[keyof typeof ValuationZone];
 
-export enum FundamentalZone {
-  UNDERVALUED = 'UNDERVALUED',
-  FAIR = 'FAIR',
-  OVERVALUED = 'OVERVALUED',
-  BUBBLE = 'BUBBLE',
-}
+export const FundamentalZone = {
+  UNDERVALUED: 'UNDERVALUED',
+  FAIR: 'FAIR',
+  OVERVALUED: 'OVERVALUED',
+  BUBBLE: 'BUBBLE',
+} as const;
+export type FundamentalZone = (typeof FundamentalZone)[keyof typeof FundamentalZone];
 
-export enum TechnicalState {
-  BULLISH = 'BULLISH',
-  NEUTRAL = 'NEUTRAL',
-  BEARISH = 'BEARISH',
-  OVEREXTENDED = 'OVEREXTENDED',
-}
+export const TechnicalState = {
+  BULLISH: 'BULLISH',
+  NEUTRAL: 'NEUTRAL',
+  BEARISH: 'BEARISH',
+  OVEREXTENDED: 'OVEREXTENDED',
+} as const;
+export type TechnicalState = (typeof TechnicalState)[keyof typeof TechnicalState];
 
-export enum HybridSignal {
-  STRONG_BUY = 'STRONG_BUY',
-  BUY = 'BUY',
-  HOLD = 'HOLD',
-  SELL = 'SELL',
-  STRONG_SELL = 'STRONG_SELL',
-}
+export const HybridSignal = {
+  STRONG_BUY: 'STRONG_BUY',
+  BUY: 'BUY',
+  HOLD: 'HOLD',
+  SELL: 'SELL',
+  STRONG_SELL: 'STRONG_SELL',
+} as const;
+export type HybridSignal = (typeof HybridSignal)[keyof typeof HybridSignal];
 
 export interface ValuationZoneLevels {
   fish_head: number;

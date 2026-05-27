@@ -22,22 +22,47 @@ const valuationZoneColorMap: Record<string, string> = {
   BONE_BROKEN: 'var(--bone-broken)',
 };
 
+const fundamentalZoneLabelMap: Record<string, string> = {
+  UNDERVALUED: '低估',
+  FAIR: '合理',
+  OVERVALUED: '高估',
+  BUBBLE: '泡沫',
+};
+
+const valuationZoneLabelMap: Record<string, string> = {
+  FISH_HEAD: '魚頭',
+  FISH_BODY: '魚身',
+  FISH_TAIL_LOW: '魚尾低',
+  FISH_TAIL_HIGH: '魚尾高',
+  FISH_BONE: '魚骨',
+  BONE_BROKEN: '斷骨',
+};
+
+function formatNetValue(value: number): string {
+  if (value >= 1e12) return `NT$ ${(value / 1e12).toFixed(2)} 兆`;
+  if (value >= 1e8) return `NT$ ${(value / 1e8).toFixed(2)} 億`;
+  return `NT$ ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
+
 export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamentalZone }) => {
   const fundColor = zoneColorMap[fundamentalZone] || 'var(--warning)';
   const valColor = valuationZoneColorMap[valuation.current_zone] || 'var(--text-secondary)';
 
+  const fundZoneDisplay = fundamentalZoneLabelMap[fundamentalZone] || fundamentalZone?.replace('_', ' ') || '無';
+  const valZoneDisplay = valuationZoneLabelMap[valuation.current_zone] || valuation.current_zone?.replace('_', ' ') || '無';
+
   const cells = [
-    { label: 'Current Price', value: `NT$ ${valuation.price?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? '—'}`, mono: true },
-    { label: 'Net Value', value: `NT$ ${valuation.net_value?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? '—'}`, mono: true },
-    { label: 'Fundamental Zone', value: fundamentalZone?.replace('_', ' ') || 'N/A', color: fundColor, badge: true },
-    { label: 'Valuation Zone', value: valuation.current_zone?.replace('_', ' ') || 'N/A', color: valColor, badge: true },
+    { label: '目前股價', value: `NT$ ${valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}`, mono: true },
+    { label: '淨值', value: valuation.net_value != null ? formatNetValue(valuation.net_value) : '—', mono: true },
+    { label: '基本面區間', value: fundZoneDisplay, color: fundColor, badge: true },
+    { label: '估值區間', value: valZoneDisplay, color: valColor, badge: true },
   ];
 
   return (
     <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)]">
       <div className="p-5 pb-3">
         <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-          Current Metrics
+          目前指標
         </h3>
       </div>
       <div className="grid grid-cols-2">

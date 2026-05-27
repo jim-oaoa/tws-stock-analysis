@@ -14,8 +14,17 @@ const signalConfig: Record<string, { color: string; bg: string; border: string }
   STRONG_SELL: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.4)' },
 };
 
+const signalLabelMap: Record<string, string> = {
+  STRONG_BUY: '強力買進',
+  BUY: '買進',
+  HOLD: '持有',
+  SELL: '賣出',
+  STRONG_SELL: '強力賣出',
+};
+
 export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
   const config = signal ? signalConfig[signal] : signalConfig.HOLD;
+  const signalDisplay = signal ? (signalLabelMap[signal] || signal.replace('_', ' ')) : '無資料';
 
   return (
     <div
@@ -36,13 +45,13 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
       />
 
       <div className="text-xs uppercase tracking-widest font-semibold text-[var(--text-secondary)] mb-1">
-        Hybrid Signal
+        綜合訊號
       </div>
       <div
         className="text-4xl md:text-5xl font-black mb-5"
         style={{ color: config.color }}
       >
-        {signal?.replace('_', ' ') || 'N/A'}
+        {signalDisplay}
       </div>
 
       {/* Divider */}
@@ -53,10 +62,10 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
 
       <div className="space-y-1">
         <div className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">
-          Recommended Action
+          建議操作
         </div>
         <div className="text-lg font-semibold text-[var(--text-primary)]">
-          {action || 'N/A'}
+          {action || '無資料'}
         </div>
       </div>
     </div>

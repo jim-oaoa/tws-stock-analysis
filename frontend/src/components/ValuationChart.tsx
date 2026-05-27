@@ -81,11 +81,11 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
             axisLabelVisible: boolean;
             title: string;
         }> = [
-            { price: zones.fish_head, color: '#22c55e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Head (0.85x)' },
-            { price: zones.fish_body, color: '#d29922', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Body (1.00x)' },
-            { price: zones.fish_tail_low, color: '#f0883e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail Low (1.15x)' },
-            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail High (1.30x)' },
-            { price: zones.fish_bone, color: '#ef4444', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Bone (2.00x)' },
+            { price: zones.fish_head, color: '#22c55e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '魚頭 (0.85x)' },
+            { price: zones.fish_body, color: '#d29922', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: '魚身 (1.00x)' },
+            { price: zones.fish_tail_low, color: '#f0883e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '魚尾低 (1.15x)' },
+            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '魚尾高 (1.30x)' },
+            { price: zones.fish_bone, color: '#ef4444', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: '魚骨 (2.00x)' },
         ];
 
         priceLinesRef.current = lineConfigs.map(config =>
@@ -106,9 +106,9 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
                     backdropFilter: 'blur(4px)',
                 }}
             >
-                Current:{' '}
+                目前：{' '}
                 <span className="text-[var(--text-primary)] font-bold tabular-nums">
-                    NT$ {valuation.price?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    NT$ {valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>
             </div>
         </div>

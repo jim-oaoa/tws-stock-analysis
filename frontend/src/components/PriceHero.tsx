@@ -7,20 +7,26 @@ interface PriceHeroProps {
 }
 
 const zoneColorMap: Record<string, { bg: string; text: string; label: string }> = {
-  UNDERVALUED: { bg: 'var(--profit-dim)', text: 'var(--profit)', label: 'Undervalued' },
-  FAIR: { bg: 'var(--warning-dim)', text: 'var(--warning)', label: 'Fair Value' },
-  OVERVALUED: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: 'Overvalued' },
-  BUBBLE: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: 'Bubble' },
+  UNDERVALUED: { bg: 'var(--profit-dim)', text: 'var(--profit)', label: '低估' },
+  FAIR: { bg: 'var(--warning-dim)', text: 'var(--warning)', label: '合理價' },
+  OVERVALUED: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: '高估' },
+  BUBBLE: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: '泡沫' },
 };
 
 const valuationZoneLabel: Record<string, string> = {
-  FISH_HEAD: '🐟 Fish Head',
-  FISH_BODY: '🐟 Fish Body',
-  FISH_TAIL_LOW: '🐟 Fish Tail Low',
-  FISH_TAIL_HIGH: '🐟 Fish Tail High',
-  FISH_BONE: '🦴 Fish Bone',
-  BONE_BROKEN: '💀 Bone Broken',
+  FISH_HEAD: '🐟 魚頭區',
+  FISH_BODY: '🐟 魚身區',
+  FISH_TAIL_LOW: '🐟 魚尾低區',
+  FISH_TAIL_HIGH: '🐟 魚尾高區',
+  FISH_BONE: '🦴 魚骨區',
+  BONE_BROKEN: '💀 斷骨區',
 };
+
+function formatNetValue(value: number): string {
+  if (value >= 1e12) return `NT$ ${(value / 1e12).toFixed(2)} 兆`;
+  if (value >= 1e8) return `NT$ ${(value / 1e8).toFixed(2)} 億`;
+  return `NT$ ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
 
 export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone }) => {
   const zoneInfo = zoneColorMap[fundamentalZone] || zoneColorMap.FAIR;
@@ -50,14 +56,14 @@ export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone
       <div className="mb-3">
         <span className="text-sm text-[var(--text-secondary)] font-medium mr-2">NT$</span>
         <span className="text-4xl md:text-5xl font-black text-[var(--text-primary)] tabular-nums">
-          {valuation.price?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? '—'}
+          {valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}
         </span>
       </div>
 
       {/* Net value subtitle */}
       <div className="text-sm text-[var(--text-secondary)]">
-        Net Value: <span className="text-[var(--text-primary)] font-semibold tabular-nums font-mono">
-          NT$ {valuation.net_value?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? '—'}
+        淨值： <span className="text-[var(--text-primary)] font-semibold tabular-nums font-mono">
+          {valuation.net_value != null ? formatNetValue(valuation.net_value) : '—'}
         </span>
       </div>
     </div>

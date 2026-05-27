@@ -116,7 +116,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[var(--bg-root)] text-[var(--text-primary)]">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--accent-blue)] focus:text-white focus:rounded-lg">
-        Skip to main content
+        跳至主要內容
       </a>
       <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
         <Header
@@ -128,7 +128,7 @@ function App() {
 
         <main id="main-content" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left sidebar: Signal + Metrics + Technical */}
-          <section className="lg:col-span-1 space-y-4" aria-label="Signal and metrics">
+          <section className="lg:col-span-1 space-y-4" aria-label="訊號與指標">
             <SignalCard
               signal={signal?.final_signal}
               action={signal?.action}
@@ -145,7 +145,7 @@ function App() {
           </section>
 
           {/* Right column: Price Hero + Valuation Chart */}
-          <section className="lg:col-span-2 space-y-4" aria-label="Price and chart">
+          <section className="lg:col-span-2 space-y-4" aria-label="價格與圖表">
             {valuation && (
               <PriceHero
                 valuation={valuation.valuation}
@@ -154,7 +154,7 @@ function App() {
             )}
             <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-[var(--radius-lg)] p-5 shadow-[var(--elevation-1)]">
               <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">
-                Valuation Curve
+                估值曲線
               </h2>
               {valuation && chartData.length > 0 && (
                 <ErrorBoundary>
@@ -166,7 +166,7 @@ function App() {
               )}
               {(!chartData || chartData.length === 0) && (
                 <div className="h-[400px] flex items-center justify-center text-[var(--text-dim)] text-sm">
-                  No chart data available
+                  尚無圖表資料
                 </div>
               )}
             </div>
@@ -174,7 +174,7 @@ function App() {
         </main>
 
         {/* Quarterly Table — full width */}
-        <section aria-label="Quarterly data">
+        <section aria-label="季度資料">
           <QuarterlyTable grid={valuation?.quarterly_grid || []} />
         </section>
       </div>
