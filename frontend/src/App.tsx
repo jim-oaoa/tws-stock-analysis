@@ -115,6 +115,9 @@ function App() {
   // --- Main dashboard ---
   return (
     <div className="min-h-screen bg-[var(--bg-root)] text-[var(--text-primary)]">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--accent-blue)] focus:text-white focus:rounded-lg">
+        Skip to main content
+      </a>
       <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
         <Header
           symbol={inputSymbol}
@@ -123,9 +126,9 @@ function App() {
           isLoading={loading}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <main id="main-content" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left sidebar: Signal + Metrics + Technical */}
-          <div className="lg:col-span-1 space-y-4">
+          <section className="lg:col-span-1 space-y-4" aria-label="Signal and metrics">
             <SignalCard
               signal={signal?.final_signal}
               action={signal?.action}
@@ -139,10 +142,10 @@ function App() {
             {signal?.technical && (
               <TechnicalCard technical={signal.technical} />
             )}
-          </div>
+          </section>
 
           {/* Right column: Price Hero + Valuation Chart */}
-          <div className="lg:col-span-2 space-y-4">
+          <section className="lg:col-span-2 space-y-4" aria-label="Price and chart">
             {valuation && (
               <PriceHero
                 valuation={valuation.valuation}
@@ -150,9 +153,9 @@ function App() {
               />
             )}
             <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-[var(--radius-lg)] p-5 shadow-[var(--elevation-1)]">
-              <h3 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">
+              <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">
                 Valuation Curve
-              </h3>
+              </h2>
               {valuation && chartData.length > 0 && (
                 <ErrorBoundary>
                   <ValuationChart
@@ -167,11 +170,13 @@ function App() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
+          </section>
+        </main>
 
         {/* Quarterly Table — full width */}
-        <QuarterlyTable grid={valuation?.quarterly_grid || []} />
+        <section aria-label="Quarterly data">
+          <QuarterlyTable grid={valuation?.quarterly_grid || []} />
+        </section>
       </div>
     </div>
   );

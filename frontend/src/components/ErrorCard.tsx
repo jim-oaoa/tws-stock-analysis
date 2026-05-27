@@ -8,6 +8,8 @@ interface ErrorCardProps {
 export const ErrorCard: React.FC<ErrorCardProps> = ({ message, onRetry }) => {
   return (
     <div
+      role="alert"
+      aria-live="assertive"
       className="rounded-[var(--radius-lg)] border p-6 text-center"
       style={{
         backgroundColor: 'var(--loss-dim)',

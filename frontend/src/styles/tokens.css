@@ -16,7 +16,7 @@
   /* Text */
   --text-primary:   #e6edf3;
   --text-secondary: #8b949e;
-  --text-dim:       #5c6570;
+  --text-dim:       #889099;
 
   /* Accents */
   --accent-blue:    #3b82f6;
@@ -89,6 +89,14 @@
     --duration-fast:   0ms;
     --duration-normal: 0ms;
     --duration-slow:   0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
   }
 }
 
