@@ -36,7 +36,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
   const biasBarWidth = Math.min(Math.abs(technical.bias), 50) * 2; // 0-100%
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] p-5 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)] space-y-4">
+    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] p-5 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)] space-y-4">
       <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
         技術指標
       </h3>
@@ -44,7 +44,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
       {/* Fish Bone Value */}
       <div className="space-y-1">
         <div className="text-xs text-[var(--text-secondary)]">魚骨價值</div>
-        <div className="text-lg font-bold text-[var(--text-primary)] tabular-nums font-mono">
+        <div className="text-lg font-semibold text-[var(--text-primary)] tabular-nums font-mono">
           NT$ {technical.fish_bone_value?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}
         </div>
       </div>
@@ -54,7 +54,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
         <div className="flex justify-between items-center">
           <span className="text-xs text-[var(--text-secondary)]">乖離率</span>
           <span
-            className="text-sm font-bold tabular-nums"
+            className="text-sm font-semibold tabular-nums"
             style={{ color: biasInfo.color }}
           >
             {technical.bias > 0 ? '+' : ''}{technical.bias?.toFixed(2) ?? '—'}%
@@ -75,17 +75,17 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
       <div className="flex items-center justify-between">
         <span className="text-xs text-[var(--text-secondary)]">趨向指標</span>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold tabular-nums text-[var(--text-primary)]">
+          <span className="text-sm font-semibold tabular-nums text-[var(--text-primary)]">
             {technical.adx?.toFixed(1) ?? '—'}
           </span>
           <span
             className="inline-block w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: adxTrending ? 'var(--profit)' : 'var(--text-dim)' }}
+            style={{ backgroundColor: adxTrending ? 'var(--profit)' : 'var(--text-secondary)' }}
             aria-label={adxTrending ? '趨勢明確' : '盤整中'}
           />
           <span
             className="text-xs font-medium"
-            style={{ color: adxTrending ? 'var(--profit)' : 'var(--text-dim)' }}
+            style={{ color: adxTrending ? 'var(--profit)' : 'var(--text-secondary)' }}
           >
             {adxTrending ? '趨勢明確' : '盤整中'}
           </span>
@@ -93,7 +93,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
       </div>
 
       {/* Technical State */}
-      <div className="pt-3 border-t border-[var(--border-default)]">
+      <div className="pt-3 border-t" style={{ borderColor: 'var(--divider)' }}>
         <div className="flex items-center justify-between">
           <span className="text-xs text-[var(--text-secondary)]">技術狀態</span>
           <span

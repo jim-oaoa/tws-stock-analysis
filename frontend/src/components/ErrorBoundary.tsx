@@ -27,10 +27,10 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="bg-zinc-800 border border-rose-500/50 p-6 rounded-xl text-center">
-          <div className="text-rose-500 text-3xl mb-3">⚠️</div>
-          <h3 className="text-lg font-bold text-zinc-200 mb-2">Chart Error</h3>
-          <p className="text-zinc-400 text-sm">{this.state.error?.message}</p>
+        <div className="p-6 rounded-[var(--radius-lg)] text-center shadow-[var(--elevation-1)]" style={{ backgroundColor: 'var(--loss-dim)', border: '1px solid var(--loss)' }}>
+          <div className="text-3xl mb-3" style={{ color: 'var(--loss)' }}>⚠️</div>
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2" style={{ letterSpacing: '-0.02em' }}>Chart Error</h3>
+          <p className="text-sm text-[var(--text-secondary)]">{this.state.error?.message}</p>
         </div>
       );
     }

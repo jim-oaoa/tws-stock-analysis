@@ -7,11 +7,11 @@ interface SignalCardProps {
 }
 
 const signalConfig: Record<string, { color: string; bg: string; border: string }> = {
-  STRONG_BUY: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.08)', border: 'rgba(34, 197, 94, 0.4)' },
-  BUY: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.08)', border: 'rgba(34, 197, 94, 0.4)' },
-  HOLD: { color: '#d29922', bg: 'rgba(210, 153, 34, 0.08)', border: 'rgba(210, 153, 34, 0.4)' },
-  SELL: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.4)' },
-  STRONG_SELL: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.4)' },
+  STRONG_BUY: { color: '#22c55e', bg: 'var(--bg-glass)', border: 'rgba(34, 197, 94, 0.4)' },
+  BUY: { color: '#22c55e', bg: 'var(--bg-glass)', border: 'rgba(34, 197, 94, 0.4)' },
+  HOLD: { color: '#d29922', bg: 'var(--bg-glass)', border: 'rgba(210, 153, 34, 0.4)' },
+  SELL: { color: '#ef4444', bg: 'var(--bg-glass)', border: 'rgba(239, 68, 68, 0.4)' },
+  STRONG_SELL: { color: '#ef4444', bg: 'var(--bg-glass)', border: 'rgba(239, 68, 68, 0.4)' },
 };
 
 const signalLabelMap: Record<string, string> = {
@@ -28,10 +28,10 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
 
   return (
     <div
-      className="relative rounded-[var(--radius-xl)] border p-6 backdrop-blur-sm transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)]"
+      className="relative rounded-[var(--radius-xl)] p-6 backdrop-blur-[12px] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]"
       style={{
         backgroundColor: config.bg,
-        borderColor: config.border,
+        border: `1px solid ${config.border}`,
         boxShadow: 'var(--elevation-1)',
       }}
     >
@@ -48,8 +48,8 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
         綜合訊號
       </div>
       <div
-        className="text-4xl md:text-5xl font-black mb-5"
-        style={{ color: config.color }}
+        className="text-4xl md:text-5xl font-semibold mb-5"
+        style={{ color: config.color, letterSpacing: '-0.02em' }}
       >
         {signalDisplay}
       </div>

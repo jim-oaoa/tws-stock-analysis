@@ -34,7 +34,7 @@ export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone
 
   return (
     <div
-      className="relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-default)] p-6 md:p-8 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)]"
+      className="relative overflow-hidden rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]"
       style={{
         background: 'linear-gradient(135deg, var(--bg-surface) 0%, transparent 100%)',
       }}
@@ -55,7 +55,7 @@ export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone
       {/* Massive price */}
       <div className="mb-3">
         <span className="text-sm text-[var(--text-secondary)] font-medium mr-2">NT$</span>
-        <span className="text-4xl md:text-5xl font-black text-[var(--text-primary)] tabular-nums">
+        <span className="text-4xl md:text-5xl font-semibold text-[var(--text-primary)] tabular-nums" style={{ letterSpacing: '-0.02em' }}>
           {valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}
         </span>
       </div>

@@ -10,14 +10,14 @@ export const ErrorCard: React.FC<ErrorCardProps> = ({ message, onRetry }) => {
     <div
       role="alert"
       aria-live="assertive"
-      className="rounded-[var(--radius-lg)] border p-6 text-center"
+      className="rounded-[var(--radius-lg)] p-6 text-center shadow-[var(--elevation-1)]"
       style={{
         backgroundColor: 'var(--loss-dim)',
-        borderColor: 'var(--loss)',
+        border: '1px solid var(--loss)',
       }}
     >
       <div className="text-3xl mb-3" role="img" aria-label="錯誤">⚠️</div>
-      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">
+      <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2" style={{ letterSpacing: '-0.02em' }}>
         發生錯誤
       </h3>
       <p className="text-sm text-[var(--text-secondary)] mb-5 max-w-md mx-auto">

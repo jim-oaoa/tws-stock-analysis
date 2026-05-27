@@ -19,15 +19,15 @@ function formatTableCell(value: number | undefined | null): string {
 export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
   if (!grid || grid.length === 0) {
     return (
-      <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] p-8 text-center">
-        <p className="text-[var(--text-dim)] text-sm">尚無季度資料</p>
+      <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] p-8 text-center shadow-[var(--elevation-1)]">
+        <p className="text-[var(--text-secondary)] text-sm">尚無季度資料</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] shadow-[var(--elevation-1)] overflow-hidden">
-      <div className="px-6 py-4 border-b border-[var(--border-default)]">
+    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] shadow-[var(--elevation-1)] overflow-hidden">
+      <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--divider)' }}>
         <h3 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
           季度估值表
         </h3>
@@ -38,33 +38,33 @@ export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
             <tr
               className="text-xs uppercase tracking-wider"
               style={{
-                backgroundColor: 'rgba(10, 14, 15, 0.5)',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
                 color: 'var(--text-secondary)',
                 position: 'sticky',
                 top: 0,
                 zIndex: 10,
               }}
             >
-              <th className="px-6 py-3 font-medium border-b border-[var(--border-default)] whitespace-nowrap">期間</th>
-              <th className="px-6 py-3 font-medium border-b border-[var(--border-default)] text-right whitespace-nowrap">每股盈餘</th>
-              <th className="px-6 py-3 font-medium border-b border-[var(--border-default)] text-right whitespace-nowrap">其他損益</th>
-              <th className="px-6 py-3 font-medium border-b border-[var(--border-default)] text-right whitespace-nowrap">股利</th>
-              <th className="px-6 py-3 font-medium border-b border-[var(--border-default)] text-right whitespace-nowrap">調整</th>
+              <th className="px-6 py-3 font-medium border-b whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>期間</th>
+              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>每股盈餘</th>
+              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>其他損益</th>
+              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>股利</th>
+              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>調整</th>
               <th
-                className="px-6 py-3 font-medium border-b border-[var(--border-default)] text-right whitespace-nowrap"
-                style={{ color: 'var(--accent-blue)' }}
+                className="px-6 py-3 font-medium border-b text-right whitespace-nowrap"
+                style={{ color: 'var(--accent-blue)', borderColor: 'var(--divider)' }}
               >
                 累積淨值
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--border-default)]">
+          <tbody className="divide-y" style={{ '--tw-divide-y-reverse': 0, borderColor: 'var(--divider)' } as React.CSSProperties}>
             {grid.map((cell, idx) => (
               <tr
                 key={`${cell.year}-${cell.quarter}`}
                 className="text-sm transition-colors duration-[var(--duration-fast)] hover:bg-[var(--bg-elevated)]"
                 style={{
-                  backgroundColor: idx % 2 === 0 ? 'var(--bg-surface)' : 'rgba(26, 31, 36, 0.5)',
+                  backgroundColor: idx % 2 === 0 ? 'var(--bg-surface)' : 'rgba(34, 34, 38, 0.4)',
                 }}
               >
                 <td className="px-6 py-3 font-medium text-[var(--text-primary)] whitespace-nowrap">
@@ -83,7 +83,7 @@ export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
                   {formatTableCell(cell.adjustment_amount)}
                 </td>
                 <td
-                  className="px-6 py-3 text-right font-bold tabular-nums font-mono whitespace-nowrap"
+                  className="px-6 py-3 text-right font-semibold tabular-nums font-mono whitespace-nowrap"
                   style={{ color: 'var(--accent-blue)' }}
                 >
                   {cell.accumulated_net_value != null ? formatNetValue(cell.accumulated_net_value) : '—'}

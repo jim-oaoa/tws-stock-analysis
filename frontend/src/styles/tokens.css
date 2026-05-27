@@ -1,25 +1,25 @@
-/* Design Tokens — OLED Dark Palette */
+/* Design Tokens — Apple-style Dark Palette */
 
 :root {
   /* === Colors === */
 
   /* Backgrounds */
-  --bg-root:        #0a0e0f;
-  --bg-surface:     #12161a;
-  --bg-elevated:    #1a1f24;
-  --bg-input:       #1e2429;
+  --bg-root:        #000000;
+  --bg-surface:     #1a1a1d;
+  --bg-elevated:    #222226;
+  --bg-section:     #111114;
+  --bg-input:       #1c1c1f;
+  --bg-glass:       rgba(255, 255, 255, 0.06);
 
-  /* Borders */
-  --border-default: #2a3038;
-  --border-active:  #3b82f6;
+  /* Dividers (subtle, only used internally) */
+  --divider:        rgba(255, 255, 255, 0.06);
 
   /* Text */
   --text-primary:   #e6edf3;
   --text-secondary: #8b949e;
-  --text-dim:       #889099;
 
-  /* Accents */
-  --accent-blue:    #3b82f6;
+  /* Accent */
+  --accent-blue:    #0071e3;
   --accent-cyan:    #22d3ee;
 
   /* Semantic — Profit / Bullish */
@@ -43,8 +43,8 @@
 
   /* === Typography === */
 
-  --font-sans:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono:      'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans:      system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:      'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --text-xs:   0.75rem;
   --text-sm:   0.875rem;
@@ -58,21 +58,17 @@
   --font-normal:   400;
   --font-medium:   500;
   --font-semibold: 600;
-  --font-bold:     700;
-  --font-black:    900;
 
   /* === Spacing & Elevation === */
 
-  --elevation-0: none;
-  --elevation-1: 0 1px 3px rgb(0 0 0 / 0.4);
-  --elevation-2: 0 4px 12px rgb(0 0 0 / 0.5);
-  --elevation-3: 0 8px 24px rgb(0 0 0 / 0.6);
+  --elevation-1: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --elevation-2: 0 8px 40px rgba(0, 0, 0, 0.5);
 
   /* === Border Radius === */
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-xl: 24px;
 
   /* === Animation === */
@@ -103,13 +99,13 @@
 /* === Keyframes === */
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.6);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 10px rgba(0, 113, 227, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0);
   }
 }
 

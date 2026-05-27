@@ -59,7 +59,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamental
   ];
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-default)] shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)]">
+    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]">
       <div className="p-5 pb-3">
         <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
           目前指標
@@ -69,8 +69,11 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamental
         {cells.map((cell, i) => (
           <div
             key={cell.label}
-            className="px-5 py-4 border-b border-r border-[var(--border-default)] transition-colors duration-[var(--duration-fast)] hover:bg-[var(--bg-elevated)]"
-            style={{ borderRightWidth: i % 2 === 0 ? '1px' : '0' }}
+            className="px-5 py-4 border-b border-r transition-colors duration-[var(--duration-fast)] hover:bg-[var(--bg-elevated)]"
+            style={{
+              borderColor: 'var(--divider)',
+              borderRightWidth: i % 2 === 0 ? '1px' : '0',
+            }}
           >
             <div className="text-xs text-[var(--text-secondary)] mb-1.5">{cell.label}</div>
             {cell.badge ? (
@@ -81,7 +84,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamental
                 {cell.value}
               </span>
             ) : (
-              <div className={`text-lg font-bold text-[var(--text-primary)] ${cell.mono ? 'tabular-nums font-mono' : ''}`}>
+              <div className={`text-lg font-semibold text-[var(--text-primary)] ${cell.mono ? 'tabular-nums font-mono' : ''}`}>
                 {cell.value}
               </div>
             )}

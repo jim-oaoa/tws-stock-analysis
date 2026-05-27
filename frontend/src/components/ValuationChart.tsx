@@ -18,7 +18,7 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
 
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { type: ColorType.Solid, color: '#12161a' },
+                background: { type: ColorType.Solid, color: '#111114' },
                 textColor: '#8b949e',
             },
             grid: {
@@ -94,20 +94,19 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
     }, [valuation]);
 
     return (
-        <div className="relative w-full h-[400px] bg-[var(--bg-surface)] rounded-[var(--radius-md)]">
+        <div className="relative w-full h-[400px] rounded-[var(--radius-md)]" style={{ backgroundColor: 'var(--bg-section)' }}>
             <div ref={chartContainerRef} className="w-full h-full" />
             {/* Price overlay — dark theme styled */}
             <div
-                className="absolute top-3 right-3 px-3 py-1.5 rounded-[var(--radius-sm)] text-xs border"
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-[var(--radius-sm)] text-xs"
                 style={{
                     backgroundColor: 'rgba(0, 0, 0, 0.7)',
                     color: 'var(--text-secondary)',
-                    borderColor: 'var(--border-default)',
                     backdropFilter: 'blur(4px)',
                 }}
             >
                 目前：{' '}
-                <span className="text-[var(--text-primary)] font-bold tabular-nums">
+                <span className="text-[var(--text-primary)] font-semibold tabular-nums">
                     NT$ {valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>
             </div>
