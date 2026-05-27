@@ -1,10 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.valuation.api import router as valuation_router
 
 app = FastAPI(
     title="TWS Stock Analysis API",
     description="Fish-Bone Valuation Engine API",
     version="1.0.0"
+)
+
+# CORS — allow frontend dev server (localhost:5174) to call API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include the valuation router

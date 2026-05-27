@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchValuation, fetchSignal } from './api/valuation';
-import { ValuationApiResponse, HybridSignalResult, HybridSignal } from './types/valuation';
+import type { ValuationApiResponse, HybridSignalResult, HybridSignal } from './types/valuation';
 import { ValuationChart } from './components/ValuationChart';
 import './App.css';
 
@@ -132,11 +132,11 @@ function App() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="text-xs text-zinc-500">Current Price</div>
-                  <div className="text-xl font-bold">${valuation?.valuation.price.toLocaleString()}</div>
+                  <div className="text-xl font-bold">${valuation?.valuation.price?.toLocaleString() ?? 'N/A'}</div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-xs text-zinc-500">Net Value</div>
-                  <div className="text-xl font-bold">${valuation?.valuation.net_value.toLocaleString()}</div>
+                  <div className="text-xl font-bold">${valuation?.valuation.net_value?.toLocaleString() ?? 'N/A'}</div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-xs text-zinc-500">Fundamental Zone</div>
@@ -185,11 +185,11 @@ function App() {
                 {valuation?.quarterly_grid.map((cell, idx) => (
                   <tr key={idx} className="hover:bg-zinc-700/30 transition-colors text-sm">
                     <td className="px-6 py-3 font-medium">{cell.year} Q{cell.quarter}</td>
-                    <td className="px-6 py-3 text-right">{cell.eps.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="px-6 py-3 text-right">{cell.oci.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="px-6 py-3 text-right">{cell.dividends.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="px-6 py-3 text-right">{cell.adjustment_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td className="px-6 py-3 text-right font-bold text-blue-400">{cell.accumulated_net_value.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td className="px-6 py-3 text-right">{cell.eps?.toLocaleString(undefined, {minimumFractionDigits: 2}) ?? '0.00'}</td>
+                    <td className="px-6 py-3 text-right">{cell.oci?.toLocaleString(undefined, {minimumFractionDigits: 2}) ?? '0.00'}</td>
+                    <td className="px-6 py-3 text-right">{cell.dividends?.toLocaleString(undefined, {minimumFractionDigits: 2}) ?? '0.00'}</td>
+                    <td className="px-6 py-3 text-right">{cell.adjustment_amount?.toLocaleString(undefined, {minimumFractionDigits: 2}) ?? '0.00'}</td>
+                    <td className="px-6 py-3 text-right font-bold text-blue-400">{cell.accumulated_net_value?.toLocaleString(undefined, {minimumFractionDigits: 2}) ?? '0.00'}</td>
                   </tr>
                 ))}
               </tbody>

@@ -5,6 +5,7 @@ Valuation API endpoints: FastAPI router wrapping build_api_response and run_valu
 from __future__ import annotations
 
 import asyncio
+import math
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
@@ -66,6 +67,12 @@ async def get_signal(
     StockRepository, then run the full valuation + hybrid signal pipeline.
     """
     highs, lows, closes = await asyncio.to_thread(_repo.get_price_series, symbol, period)
+    # Filter NaN values from yfinance data (occur when market is closed)
+    closes = [float(v) for v in closes if not (isinstance(v, float) and math.isnan(v))]
+    if highs:
+        highs = [float(v) if not (isinstance(v, float) and math.isnan(v)) else 0.0 for v in highs]
+    if lows:
+        lows = [float(v) if not (isinstance(v, float) and math.isnan(v)) else 0.0 for v in lows]
     if not closes:
         raise HTTPException(status_code=404, detail=f"No price data found for symbol '{symbol}'.")
     if len(closes) < 60:
@@ -78,7 +85,10 @@ async def get_signal(
     if not records:
         raise HTTPException(status_code=404, detail=f"No financial data found for symbol '{symbol}'.")
 
-    price = closes[-1]
+    price = float(closes[-1])
+    closes = [float(v) for v in closes]
+    highs = [float(v) for v in highs] if highs else None
+    lows = [float(v) for v in lows] if lows else None
     highs_arg = highs if highs else None
     lows_arg = lows if lows else None
 
@@ -113,6 +123,12 @@ async def get_valuation(
     StockRepository, then compute the Fish-Bone valuation grid and fundamental zone.
     """
     highs, lows, closes = await asyncio.to_thread(_repo.get_price_series, symbol, period)
+    # Filter NaN values from yfinance data (occur when market is closed)
+    closes = [float(v) for v in closes if not (isinstance(v, float) and math.isnan(v))]
+    if highs:
+        highs = [float(v) if not (isinstance(v, float) and math.isnan(v)) else 0.0 for v in highs]
+    if lows:
+        lows = [float(v) if not (isinstance(v, float) and math.isnan(v)) else 0.0 for v in lows]
     if not closes:
         raise HTTPException(status_code=404, detail=f"No price data found for symbol '{symbol}'.")
     if len(closes) < 60:
@@ -125,7 +141,10 @@ async def get_valuation(
     if not records:
         raise HTTPException(status_code=404, detail=f"No financial data found for symbol '{symbol}'.")
 
-    price = closes[-1]
+    price = float(closes[-1])
+    closes = [float(v) for v in closes]
+    highs = [float(v) for v in highs] if highs else None
+    lows = [float(v) for v in lows] if lows else None
     highs_arg = highs if highs else None
     lows_arg = lows if lows else None
 
