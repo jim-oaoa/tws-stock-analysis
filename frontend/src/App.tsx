@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchValuation, fetchSignal } from './api/valuation';
 import type { ValuationApiResponse, HybridSignalResult, HybridSignal } from './types/valuation';
 import { ValuationChart } from './components/ValuationChart';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import './App.css';
 
 function App() {
@@ -52,11 +53,18 @@ function App() {
     }
   };
 
-  // Transform quarterly_grid to chart data
-  const chartData = valuation?.quarterly_grid.map(cell => ({
-    time: `${cell.year}-Q${cell.quarter}`,
-    value: cell.accumulated_net_value
-  })) || [];
+  // Transform quarterly_grid to chart data with proper yyyy-mm-dd format.
+  // lightweight-charts requires: (1) yyyy-mm-dd format, (2) ascending time order.
+  // API returns newest-first; we reverse to oldest-first.
+  const chartData = (valuation?.quarterly_grid || [])
+    .map(cell => {
+      const quarterToMonth: Record<number, string> = { 1: '03-31', 2: '06-30', 3: '09-30', 4: '12-31' };
+      return {
+        time: `${cell.year}-${quarterToMonth[cell.quarter] || '12-31'}`,
+        value: cell.accumulated_net_value
+      };
+    })
+    .reverse(); // lightweight-charts requires ascending (oldest → newest)
 
   if (loading) {
     return (
@@ -155,10 +163,12 @@ function App() {
             <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-700 h-full">
               <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Valuation Curve</h3>
               {valuation && (
-                <ValuationChart 
-                  data={chartData} 
-                  valuation={valuation.valuation} 
-                />
+                <ErrorBoundary>
+                  <ValuationChart 
+                    data={chartData} 
+                    valuation={valuation.valuation} 
+                  />
+                </ErrorBoundary>
               )}
             </div>
           </div>

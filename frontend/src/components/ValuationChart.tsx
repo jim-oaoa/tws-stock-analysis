@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { createChart, ColorType, ISeriesApi, IPriceLine } from 'lightweight-charts';
-import { ValuationResult, ValuationZoneLevels } from '../types/valuation';
+import { createChart, ColorType, LineSeries } from 'lightweight-charts';
+import type { ISeriesApi } from 'lightweight-charts';
+import type { ValuationResult } from '../types/valuation';
 
 interface ValuationChartProps {
     data: { time: string; value: number }[];
@@ -29,7 +30,7 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
             height: 400,
         });
 
-        const lineSeries = chart.addLineSeries({
+        const lineSeries = chart.addSeries(LineSeries, {
             color: '#3b82f6',
             lineWidth: 2,
         });
@@ -61,12 +62,12 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
         priceLinesRef.current = [];
 
         const zones = valuation.zones;
-        const lineConfigs = [
-            { price: zones.fish_head, color: '#22c55e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Head (0.85x)' },
-            { price: zones.fish_body, color: '#eab308', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Body (1.00x)' },
-            { price: zones.fish_tail_low, color: '#f97316', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail Low (1.15x)' },
-            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail High (1.30x)' },
-            { price: zones.fish_bone, color: '#7f1d1d', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Bone (2.00x)' },
+        const lineConfigs: Array<{ price: number; color: string; lineWidth: 1 | 2 | 3 | 4; lineStyle: 0 | 1 | 2 | 3 | 4; axisLabelVisible: boolean; title: string }> = [
+            { price: zones.fish_head, color: '#22c55e', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Head (0.85x)' },
+            { price: zones.fish_body, color: '#eab308', lineWidth: 2 as const, lineStyle: 0 as const, axisLabelVisible: true, title: 'Fish Body (1.00x)' },
+            { price: zones.fish_tail_low, color: '#f97316', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Tail Low (1.15x)' },
+            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Tail High (1.30x)' },
+            { price: zones.fish_bone, color: '#7f1d1d', lineWidth: 2 as const, lineStyle: 0 as const, axisLabelVisible: true, title: 'Fish Bone (2.00x)' },
         ];
 
         priceLinesRef.current = lineConfigs.map(config => 

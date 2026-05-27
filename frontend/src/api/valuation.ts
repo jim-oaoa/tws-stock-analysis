@@ -1,10 +1,10 @@
 import axios from 'axios';
 import type { ValuationApiResponse, HybridSignalResult } from '../types/valuation';
 
-const API_BASE_URL = 'http://localhost:8001';
-
+// Use relative path so Vite proxy handles forwarding to backend.
+// This avoids the Windows-browser → WSL localhost cross-environment dead-end.
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
   },
