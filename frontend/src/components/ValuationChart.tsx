@@ -16,23 +16,34 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
     useEffect(() => {
         if (!chartContainerRef.current) return;
 
-        // 1. Initialize Chart
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { type: ColorType.Solid, color: '#1a1a1a' },
-                textColor: '#d1d5db',
+                background: { type: ColorType.Solid, color: '#12161a' },
+                textColor: '#8b949e',
             },
             grid: {
-                vertLines: { color: '#333' },
-                horzLines: { color: '#333' },
+                vertLines: { color: 'rgba(255,255,255,0.05)' },
+                horzLines: { color: 'rgba(255,255,255,0.05)' },
             },
             width: chartContainerRef.current.clientWidth,
             height: 400,
+            crosshair: {
+                mode: 0,
+            },
+            rightPriceScale: {
+                borderColor: 'rgba(255,255,255,0.08)',
+            },
+            timeScale: {
+                borderColor: 'rgba(255,255,255,0.08)',
+                timeVisible: true,
+                secondsVisible: false,
+            },
         });
 
         const lineSeries = chart.addSeries(LineSeries, {
-            color: '#3b82f6',
+            color: '#22d3ee',
             lineWidth: 2,
+            priceLineVisible: false,
         });
 
         lineSeries.setData(data);
@@ -62,24 +73,43 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
         priceLinesRef.current = [];
 
         const zones = valuation.zones;
-        const lineConfigs: Array<{ price: number; color: string; lineWidth: 1 | 2 | 3 | 4; lineStyle: 0 | 1 | 2 | 3 | 4; axisLabelVisible: boolean; title: string }> = [
-            { price: zones.fish_head, color: '#22c55e', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Head (0.85x)' },
-            { price: zones.fish_body, color: '#eab308', lineWidth: 2 as const, lineStyle: 0 as const, axisLabelVisible: true, title: 'Fish Body (1.00x)' },
-            { price: zones.fish_tail_low, color: '#f97316', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Tail Low (1.15x)' },
-            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1 as const, lineStyle: 2 as const, axisLabelVisible: true, title: 'Fish Tail High (1.30x)' },
-            { price: zones.fish_bone, color: '#7f1d1d', lineWidth: 2 as const, lineStyle: 0 as const, axisLabelVisible: true, title: 'Fish Bone (2.00x)' },
+        const lineConfigs: Array<{
+            price: number;
+            color: string;
+            lineWidth: 1 | 2 | 3 | 4;
+            lineStyle: 0 | 1 | 2 | 3 | 4;
+            axisLabelVisible: boolean;
+            title: string;
+        }> = [
+            { price: zones.fish_head, color: '#22c55e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Head (0.85x)' },
+            { price: zones.fish_body, color: '#d29922', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Body (1.00x)' },
+            { price: zones.fish_tail_low, color: '#f0883e', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail Low (1.15x)' },
+            { price: zones.fish_tail_high, color: '#ef4444', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Fish Tail High (1.30x)' },
+            { price: zones.fish_bone, color: '#ef4444', lineWidth: 2, lineStyle: 0, axisLabelVisible: true, title: 'Fish Bone (2.00x)' },
         ];
 
-        priceLinesRef.current = lineConfigs.map(config => 
+        priceLinesRef.current = lineConfigs.map(config =>
             seriesRef.current!.createPriceLine(config)
         );
     }, [valuation]);
 
     return (
-        <div className="relative w-full h-[400px] bg-[#1a1a1a] rounded-lg p-4 border border-gray-800">
+        <div className="relative w-full h-[400px] bg-[var(--bg-surface)] rounded-[var(--radius-md)]">
             <div ref={chartContainerRef} className="w-full h-full" />
-            <div className="absolute top-4 right-4 bg-black/60 p-2 rounded text-xs text-gray-300 border border-gray-700">
-                Current: <span className="text-white font-bold">{valuation.price}</span>
+            {/* Price overlay — dark theme styled */}
+            <div
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-[var(--radius-sm)] text-xs border"
+                style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    color: 'var(--text-secondary)',
+                    borderColor: 'var(--border-default)',
+                    backdropFilter: 'blur(4px)',
+                }}
+            >
+                Current:{' '}
+                <span className="text-[var(--text-primary)] font-bold tabular-nums">
+                    NT$ {valuation.price?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
             </div>
         </div>
     );

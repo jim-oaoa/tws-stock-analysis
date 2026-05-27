@@ -1,1 +1,79 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
+
+/* === Tailwind v4 Theme (CSS-first) === */
+@theme {
+  /* Colors */
+  --color-bg-root:        #0a0e0f;
+  --color-bg-surface:     #12161a;
+  --color-bg-elevated:    #1a1f24;
+  --color-bg-input:       #1e2429;
+  --color-border-default: #2a3038;
+  --color-border-active:  #3b82f6;
+  --color-text-primary:   #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-dim:       #5c6570;
+  --color-accent-blue:    #3b82f6;
+  --color-accent-cyan:    #22d3ee;
+  --color-profit:         #22c55e;
+  --color-profit-dim:     #1a3a2a;
+  --color-loss:           #ef4444;
+  --color-loss-dim:       #3a1a1a;
+  --color-warning:        #d29922;
+  --color-warning-dim:    #3a2e0a;
+  --color-fish-head:      #22c55e;
+  --color-fish-body:      #d29922;
+  --color-fish-tail:      #f0883e;
+  --color-fish-bone:      #ef4444;
+  --color-bone-broken:    #5c6570;
+
+  /* Font families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Box shadows */
+  --shadow-elevation-1: 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-elevation-2: 0 4px 12px rgb(0 0 0 / 0.5);
+  --shadow-elevation-3: 0 8px 24px rgb(0 0 0 / 0.6);
+}
+
+/* === Base Styles === */
+body {
+  background: var(--bg-root);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+/* Focus ring for interactive elements */
+*:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-root);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
