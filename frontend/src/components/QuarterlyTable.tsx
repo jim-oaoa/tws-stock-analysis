@@ -19,15 +19,15 @@ function formatTableCell(value: number | undefined | null): string {
 export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
   if (!grid || grid.length === 0) {
     return (
-      <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] p-8 text-center shadow-[var(--elevation-1)]">
+      <div className="glass-card rounded-[var(--radius-lg)] p-8 text-center">
         <p className="text-[var(--text-secondary)] text-sm">尚無季度資料</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] shadow-[var(--elevation-1)] overflow-hidden">
-      <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--divider)' }}>
+    <div className="glass-card rounded-[var(--radius-lg)] overflow-hidden">
+      <div className="px-6 py-4 border-b border-white/5">
         <h3 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
           季度估值表
         </h3>
@@ -45,26 +45,26 @@ export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
                 zIndex: 10,
               }}
             >
-              <th className="px-6 py-3 font-medium border-b whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>期間</th>
-              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>每股盈餘</th>
-              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>其他損益</th>
-              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>股利</th>
-              <th className="px-6 py-3 font-medium border-b text-right whitespace-nowrap" style={{ borderColor: 'var(--divider)' }}>調整</th>
+              <th className="px-6 py-3 font-medium border-b border-white/5 whitespace-nowrap">期間</th>
+              <th className="px-6 py-3 font-medium border-b border-white/5 text-right whitespace-nowrap">每股盈餘</th>
+              <th className="px-6 py-3 font-medium border-b border-white/5 text-right whitespace-nowrap">其他損益</th>
+              <th className="px-6 py-3 font-medium border-b border-white/5 text-right whitespace-nowrap">股利</th>
+              <th className="px-6 py-3 font-medium border-b border-white/5 text-right whitespace-nowrap">調整</th>
               <th
-                className="px-6 py-3 font-medium border-b text-right whitespace-nowrap"
-                style={{ color: 'var(--accent-blue)', borderColor: 'var(--divider)' }}
+                className="px-6 py-3 font-medium border-b border-white/5 text-right whitespace-nowrap"
+                style={{ color: '#e8ba40' }}
               >
                 累積淨值
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y" style={{ '--tw-divide-y-reverse': 0, borderColor: 'var(--divider)' } as React.CSSProperties}>
+          <tbody className="divide-y divide-white/5">
             {grid.map((cell, idx) => (
               <tr
                 key={`${cell.year}-${cell.quarter}`}
-                className="text-sm transition-colors duration-[var(--duration-fast)] hover:bg-[var(--bg-elevated)]"
+                className="text-sm transition-colors duration-[var(--duration-fast)] hover:bg-white/[0.03]"
                 style={{
-                  backgroundColor: idx % 2 === 0 ? 'var(--bg-surface)' : 'rgba(34, 34, 38, 0.4)',
+                  backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.02)',
                 }}
               >
                 <td className="px-6 py-3 font-medium text-[var(--text-primary)] whitespace-nowrap">
@@ -84,7 +84,7 @@ export const QuarterlyTable: React.FC<QuarterlyTableProps> = ({ grid }) => {
                 </td>
                 <td
                   className="px-6 py-3 text-right font-semibold tabular-nums font-mono whitespace-nowrap"
-                  style={{ color: 'var(--accent-blue)' }}
+                  style={{ color: '#e8ba40' }}
                 >
                   {cell.accumulated_net_value != null ? formatNetValue(cell.accumulated_net_value) : '—'}
                 </td>

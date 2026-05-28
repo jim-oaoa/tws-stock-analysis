@@ -18,12 +18,12 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
 
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { type: ColorType.Solid, color: '#111114' },
-                textColor: '#8b949e',
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#9095a1',
             },
             grid: {
-                vertLines: { color: 'rgba(255,255,255,0.05)' },
-                horzLines: { color: 'rgba(255,255,255,0.05)' },
+                vertLines: { color: 'rgba(255,255,255,0.04)' },
+                horzLines: { color: 'rgba(255,255,255,0.04)' },
             },
             width: chartContainerRef.current.clientWidth,
             height: 400,
@@ -31,17 +31,17 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
                 mode: 0,
             },
             rightPriceScale: {
-                borderColor: 'rgba(255,255,255,0.08)',
+                borderColor: 'rgba(255,255,255,0.06)',
             },
             timeScale: {
-                borderColor: 'rgba(255,255,255,0.08)',
+                borderColor: 'rgba(255,255,255,0.06)',
                 timeVisible: true,
                 secondsVisible: false,
             },
         });
 
         const lineSeries = chart.addSeries(LineSeries, {
-            color: '#22d3ee',
+            color: '#0fedbe',
             lineWidth: 2,
             priceLineVisible: false,
         });
@@ -94,15 +94,19 @@ export const ValuationChart: React.FC<ValuationChartProps> = ({ data, valuation 
     }, [valuation]);
 
     return (
-        <div className="relative w-full h-[400px] rounded-[var(--radius-md)]" style={{ backgroundColor: 'var(--bg-section)' }}>
+        <div
+            className="relative w-full h-[400px] rounded-[var(--radius-md)]"
+            style={{ backgroundColor: 'rgba(10, 10, 10, 0.6)' }}
+        >
             <div ref={chartContainerRef} className="w-full h-full" />
-            {/* Price overlay — dark theme styled */}
+            {/* Price overlay */}
             <div
                 className="absolute top-3 right-3 px-3 py-1.5 rounded-[var(--radius-sm)] text-xs"
                 style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
                     color: 'var(--text-secondary)',
-                    backdropFilter: 'blur(4px)',
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
                 }}
             >
                 目前：{' '}

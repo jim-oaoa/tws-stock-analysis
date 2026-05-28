@@ -36,7 +36,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
   const biasBarWidth = Math.min(Math.abs(technical.bias), 50) * 2; // 0-100%
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] p-5 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)] space-y-4">
+    <div className="glass-card rounded-[var(--radius-lg)] p-5 space-y-4">
       <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
         技術指標
       </h3>
@@ -54,13 +54,13 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
         <div className="flex justify-between items-center">
           <span className="text-xs text-[var(--text-secondary)]">乖離率</span>
           <span
-            className="text-sm font-semibold tabular-nums"
+            className="text-sm font-bold tabular-nums"
             style={{ color: biasInfo.color }}
           >
             {technical.bias > 0 ? '+' : ''}{technical.bias?.toFixed(2) ?? '—'}%
           </span>
         </div>
-        <div className="h-2 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
+        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-[var(--duration-slow)] ease-[var(--easing)]"
             style={{
@@ -80,12 +80,12 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
           </span>
           <span
             className="inline-block w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: adxTrending ? 'var(--profit)' : 'var(--text-secondary)' }}
+            style={{ backgroundColor: adxTrending ? '#0fedbe' : 'var(--text-secondary)' }}
             aria-label={adxTrending ? '趨勢明確' : '盤整中'}
           />
           <span
             className="text-xs font-medium"
-            style={{ color: adxTrending ? 'var(--profit)' : 'var(--text-secondary)' }}
+            style={{ color: adxTrending ? '#0fedbe' : 'var(--text-secondary)' }}
           >
             {adxTrending ? '趨勢明確' : '盤整中'}
           </span>
@@ -93,7 +93,7 @@ export const TechnicalCard: React.FC<TechnicalCardProps> = ({ technical }) => {
       </div>
 
       {/* Technical State */}
-      <div className="pt-3 border-t" style={{ borderColor: 'var(--divider)' }}>
+      <div className="pt-3 border-t border-white/5">
         <div className="flex items-center justify-between">
           <span className="text-xs text-[var(--text-secondary)]">技術狀態</span>
           <span

@@ -1,26 +1,31 @@
-/* Design Tokens — Apple-style Dark Palette */
+/* Design Tokens — Glassmorphism Dark Palette */
 
 :root {
   /* === Colors === */
 
-  /* Backgrounds */
-  --bg-root:        #000000;
-  --bg-surface:     #1a1a1d;
-  --bg-elevated:    #222226;
-  --bg-section:     #111114;
-  --bg-input:       #1c1c1f;
-  --bg-glass:       rgba(255, 255, 255, 0.06);
+  /* Backgrounds — rooted at #0a0a0a */
+  --bg-root:        #0a0a0a;
+  --bg-surface:     rgba(20, 20, 20, 0.4);
+  --bg-elevated:    rgba(30, 30, 30, 0.6);
+  --bg-section:     rgba(10, 10, 10, 0.8);
+  --bg-input:       rgba(255, 255, 255, 0.05);
+  --bg-glass:       rgba(20, 20, 20, 0.4);
 
   /* Dividers (subtle, only used internally) */
   --divider:        rgba(255, 255, 255, 0.06);
 
   /* Text */
   --text-primary:   #e6edf3;
-  --text-secondary: #8b949e;
+  --text-secondary: #9095a1;
 
-  /* Accent */
-  --accent-blue:    #0071e3;
-  --accent-cyan:    #22d3ee;
+  /* Accents */
+  --accent-gold:      #e8ba40;
+  --accent-gold-light:#fdd458;
+  --accent-blue:      #5862ff;
+  --accent-cyan:      #0fedbe;
+  --accent-red:       #ff495b;
+  --accent-orange:    #ff8243;
+  --accent-purple:    #d13bff;
 
   /* Semantic — Profit / Bullish */
   --profit:         #22c55e;
@@ -58,11 +63,17 @@
   --font-normal:   400;
   --font-medium:   500;
   --font-semibold: 600;
+  --font-bold:     700;
+  --font-black:    900;
 
   /* === Spacing & Elevation === */
 
   --elevation-1: 0 4px 24px rgba(0, 0, 0, 0.4);
   --elevation-2: 0 8px 40px rgba(0, 0, 0, 0.5);
+
+  /* Gold glow */
+  --glow-gold: 0 0 30px -10px rgba(234, 179, 8, 0.1);
+  --glow-gold-strong: 0 0 20px -5px rgba(232, 186, 64, 0.3);
 
   /* === Border Radius === */
 
@@ -99,13 +110,13 @@
 /* === Keyframes === */
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.6);
+    box-shadow: 0 0 0 0 rgba(232, 186, 64, 0.6);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(0, 113, 227, 0);
+    box-shadow: 0 0 0 10px rgba(232, 186, 64, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0);
+    box-shadow: 0 0 0 0 rgba(232, 186, 64, 0);
   }
 }
 
@@ -126,3 +137,29 @@
     background-position: 400px 0;
   }
 }
+
+/* Entrance animations */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Stagger delays */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }

@@ -59,7 +59,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamental
   ];
 
   return (
-    <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]">
+    <div className="glass-card rounded-[var(--radius-lg)]">
       <div className="p-5 pb-3">
         <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
           目前指標
@@ -69,9 +69,8 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ valuation, fundamental
         {cells.map((cell, i) => (
           <div
             key={cell.label}
-            className="px-5 py-4 border-b border-r transition-colors duration-[var(--duration-fast)] hover:bg-[var(--bg-elevated)]"
+            className="px-5 py-4 border-b border-r border-white/5 transition-colors duration-[var(--duration-fast)] hover:bg-white/[0.03]"
             style={{
-              borderColor: 'var(--divider)',
               borderRightWidth: i % 2 === 0 ? '1px' : '0',
             }}
           >

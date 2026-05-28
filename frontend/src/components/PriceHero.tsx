@@ -6,11 +6,11 @@ interface PriceHeroProps {
   fundamentalZone: FundamentalZone;
 }
 
-const zoneColorMap: Record<string, { bg: string; text: string; label: string }> = {
-  UNDERVALUED: { bg: 'var(--profit-dim)', text: 'var(--profit)', label: '低估' },
-  FAIR: { bg: 'var(--warning-dim)', text: 'var(--warning)', label: '合理價' },
-  OVERVALUED: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: '高估' },
-  BUBBLE: { bg: 'var(--loss-dim)', text: 'var(--loss)', label: '泡沫' },
+const zoneColorMap: Record<string, { bg: string; text: string; border: string; label: string }> = {
+  UNDERVALUED: { bg: 'var(--profit-dim)', text: 'var(--profit)', border: 'rgba(34, 197, 94, 0.3)', label: '低估' },
+  FAIR: { bg: 'var(--warning-dim)', text: 'var(--warning)', border: 'rgba(210, 153, 34, 0.3)', label: '合理價' },
+  OVERVALUED: { bg: 'var(--loss-dim)', text: 'var(--loss)', border: 'rgba(239, 68, 68, 0.3)', label: '高估' },
+  BUBBLE: { bg: 'var(--loss-dim)', text: 'var(--loss)', border: 'rgba(239, 68, 68, 0.3)', label: '泡沫' },
 };
 
 const valuationZoneLabel: Record<string, string> = {
@@ -33,17 +33,16 @@ export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone
   const valZoneLabel = valuationZoneLabel[valuation.current_zone] || valuation.current_zone;
 
   return (
-    <div
-      className="relative overflow-hidden rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[var(--elevation-1)] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]"
-      style={{
-        background: 'linear-gradient(135deg, var(--bg-surface) 0%, transparent 100%)',
-      }}
-    >
+    <div className="glass-card relative overflow-hidden rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[var(--elevation-1)]">
       {/* Zone badge */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <span
           className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
-          style={{ backgroundColor: zoneInfo.bg, color: zoneInfo.text }}
+          style={{
+            backgroundColor: zoneInfo.bg,
+            color: zoneInfo.text,
+            border: `1px solid ${zoneInfo.border}`,
+          }}
         >
           {zoneInfo.label}
         </span>
@@ -52,17 +51,17 @@ export const PriceHero: React.FC<PriceHeroProps> = ({ valuation, fundamentalZone
         </span>
       </div>
 
-      {/* Massive price */}
+      {/* Massive price — font-black with text gradient */}
       <div className="mb-3">
         <span className="text-sm text-[var(--text-secondary)] font-medium mr-2">NT$</span>
-        <span className="text-4xl md:text-5xl font-semibold text-[var(--text-primary)] tabular-nums" style={{ letterSpacing: '-0.02em' }}>
+        <span className="text-5xl md:text-6xl font-black text-gradient tabular-nums">
           {valuation.price?.toLocaleString(undefined, { maximumFractionDigits: 0 }) ?? '—'}
         </span>
       </div>
 
       {/* Net value subtitle */}
       <div className="text-sm text-[var(--text-secondary)]">
-        淨值： <span className="text-[var(--text-primary)] font-semibold tabular-nums font-mono">
+        淨值： <span className="text-[var(--text-primary)] font-bold tabular-nums font-mono">
           {valuation.net_value != null ? formatNetValue(valuation.net_value) : '—'}
         </span>
       </div>

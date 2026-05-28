@@ -77,14 +77,14 @@ function App() {
           onChange={setInputSymbol}
           isLoading={true}
         />
-        <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-1 space-y-5">
+        <div className="container space-y-8 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1 space-y-6">
               <SkeletonSignal />
               <SkeletonCard />
               <SkeletonCard />
             </div>
-            <div className="lg:col-span-2 space-y-5">
+            <div className="lg:col-span-2 space-y-6">
               <SkeletonPrice />
               <SkeletonChart />
             </div>
@@ -105,8 +105,10 @@ function App() {
           onChange={setInputSymbol}
           isLoading={false}
         />
-        <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-8">
-          <ErrorCard message={error} onRetry={handleRetry} />
+        <div className="container py-10">
+          <div className="animate-fade-in-up">
+            <ErrorCard message={error} onRetry={handleRetry} />
+          </div>
         </div>
       </div>
     );
@@ -115,7 +117,7 @@ function App() {
   // --- Main dashboard ---
   return (
     <div className="min-h-screen bg-[var(--bg-root)] text-[var(--text-primary)]">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--accent-blue)] focus:text-white focus:rounded-full">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#e8ba40] focus:text-gray-950 focus:rounded-full">
         跳至主要內容
       </a>
 
@@ -126,35 +128,43 @@ function App() {
         isLoading={loading}
       />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8">
-        <main id="main-content" className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="container space-y-8 py-10 pb-20">
+        <main id="main-content" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left sidebar: Signal + Metrics + Technical */}
-          <section className="lg:col-span-1 space-y-5" aria-label="訊號與指標">
-            <SignalCard
-              signal={signal?.final_signal}
-              action={signal?.action}
-            />
-            {valuation && (
-              <MetricsGrid
-                valuation={valuation.valuation}
-                fundamentalZone={valuation.fundamental_zone}
+          <section className="lg:col-span-1 space-y-6" aria-label="訊號與指標">
+            <div className="animate-fade-in-up">
+              <SignalCard
+                signal={signal?.final_signal}
+                action={signal?.action}
               />
+            </div>
+            {valuation && (
+              <div className="animate-fade-in-up animate-delay-100">
+                <MetricsGrid
+                  valuation={valuation.valuation}
+                  fundamentalZone={valuation.fundamental_zone}
+                />
+              </div>
             )}
             {signal?.technical && (
-              <TechnicalCard technical={signal.technical} />
+              <div className="animate-fade-in-up animate-delay-200">
+                <TechnicalCard technical={signal.technical} />
+              </div>
             )}
           </section>
 
           {/* Right column: Price Hero + Valuation Chart */}
-          <section className="lg:col-span-2 space-y-5" aria-label="價格與圖表">
+          <section className="lg:col-span-2 space-y-6" aria-label="價格與圖表">
             {valuation && (
-              <PriceHero
-                valuation={valuation.valuation}
-                fundamentalZone={valuation.fundamental_zone}
-              />
+              <div className="animate-fade-in-up animate-delay-100">
+                <PriceHero
+                  valuation={valuation.valuation}
+                  fundamentalZone={valuation.fundamental_zone}
+                />
+              </div>
             )}
-            <div className="rounded-[var(--radius-lg)] p-5 shadow-[var(--elevation-1)]" style={{ backgroundColor: 'var(--bg-section)' }}>
-              <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4" style={{ letterSpacing: '-0.02em' }}>
+            <div className="glass-card rounded-[var(--radius-lg)] p-5 animate-fade-in-up animate-delay-200">
+              <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">
                 估值曲線
               </h2>
               {valuation && chartData.length > 0 && (
@@ -174,8 +184,8 @@ function App() {
           </section>
         </main>
 
-        {/* Quarterly Table — full width, alternating section bg */}
-        <section aria-label="季度資料" className="pb-8">
+        {/* Quarterly Table — full width */}
+        <section aria-label="季度資料" className="animate-fade-in-up animate-delay-300">
           <QuarterlyTable grid={valuation?.quarterly_grid || []} />
         </section>
       </div>

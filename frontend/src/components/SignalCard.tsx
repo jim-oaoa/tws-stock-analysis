@@ -7,11 +7,11 @@ interface SignalCardProps {
 }
 
 const signalConfig: Record<string, { color: string; bg: string; border: string }> = {
-  STRONG_BUY: { color: '#22c55e', bg: 'var(--bg-glass)', border: 'rgba(34, 197, 94, 0.4)' },
-  BUY: { color: '#22c55e', bg: 'var(--bg-glass)', border: 'rgba(34, 197, 94, 0.4)' },
-  HOLD: { color: '#d29922', bg: 'var(--bg-glass)', border: 'rgba(210, 153, 34, 0.4)' },
-  SELL: { color: '#ef4444', bg: 'var(--bg-glass)', border: 'rgba(239, 68, 68, 0.4)' },
-  STRONG_SELL: { color: '#ef4444', bg: 'var(--bg-glass)', border: 'rgba(239, 68, 68, 0.4)' },
+  STRONG_BUY: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.06)', border: 'rgba(34, 197, 94, 0.25)' },
+  BUY: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.06)', border: 'rgba(34, 197, 94, 0.25)' },
+  HOLD: { color: '#d29922', bg: 'rgba(210, 153, 34, 0.06)', border: 'rgba(210, 153, 34, 0.25)' },
+  SELL: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.06)', border: 'rgba(239, 68, 68, 0.25)' },
+  STRONG_SELL: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.06)', border: 'rgba(239, 68, 68, 0.25)' },
 };
 
 const signalLabelMap: Record<string, string> = {
@@ -28,12 +28,8 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
 
   return (
     <div
-      className="relative rounded-[var(--radius-xl)] p-6 backdrop-blur-[12px] transition-all duration-[var(--duration-normal)] ease-[var(--easing)] hover:shadow-[var(--elevation-2)]"
-      style={{
-        backgroundColor: config.bg,
-        border: `1px solid ${config.border}`,
-        boxShadow: 'var(--elevation-1)',
-      }}
+      className="glass-card relative rounded-[var(--radius-xl)] p-6"
+      style={{ borderColor: config.border }}
     >
       {/* Animated pulse ring */}
       <div
@@ -48,17 +44,14 @@ export const SignalCard: React.FC<SignalCardProps> = ({ signal, action }) => {
         綜合訊號
       </div>
       <div
-        className="text-4xl md:text-5xl font-semibold mb-5"
-        style={{ color: config.color, letterSpacing: '-0.02em' }}
+        className="text-4xl md:text-5xl font-black mb-5"
+        style={{ color: config.color }}
       >
         {signalDisplay}
       </div>
 
       {/* Divider */}
-      <div
-        className="border-t mb-4"
-        style={{ borderColor: 'rgba(255,255,255,0.08)' }}
-      />
+      <div className="border-t border-white/5 mb-4" />
 
       <div className="space-y-1">
         <div className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">
