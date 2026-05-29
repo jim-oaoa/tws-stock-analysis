@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TWS 台股分析儀表板 — 2330.TW 台積電</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { gold: '#e8ba40', green: '#3fb950', red: '#f85149', cyan: '#0fedbe', blue: '#58a6ff' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glow-gold { box-shadow: 0 0 30px -10px rgba(232,186,64,0.15); }
+  </style>
+</head>
+<body class="bg-gray-950 min-h-screen text-gray-100 antialiased">
+  <header class="sticky top-0 z-50 border-b border-white/5 bg-gray-950/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-brand-gold/20 flex items-center justify-center">
+          <span class="text-brand-gold font-black text-sm">T</span>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold tracking-tight text-white">TWS Stock Analysis</h1>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Fish-Bone Valuation Engine</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-xs text-gray-400">
+        <span class="flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> API: OK</span>
+        <span class="flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> Data: OK</span>
+      </div>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+    <div class="bg-gray-900 border border-white/5 rounded-2xl p-6 sm:p-8 glow-gold">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-brand-blue/15 text-brand-blue text-[11px] font-bold tracking-wide">2330.TW</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-green-900/60 text-green-300 text-[11px] font-semibold">低估</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-orange-900/50 text-orange-300 text-[11px] font-semibold">魚頭</span>
+          </div>
+          <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-white">NT$ 2,270</h2>
+          <p class="text-sm text-gray-400 mt-1">Taiwan Semiconductor Manufacturing Co. (台積電)</p>
+        </div>
+        <div class="flex flex-col items-end gap-1">
+          <span class="text-[10px] uppercase tracking-widest text-gray-500">淨值 (Net Value)</span>
+          <span class="text-2xl font-bold text-white font-mono">596.4<span class="text-gray-500 text-base">B</span></span>
+        </div>
+      </div>
+      <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden flex">
+        <div class="bg-gradient-to-r from-green-700 to-green-500 h-full" style="width:36%"></div>
+        <div class="bg-gradient-to-r from-yellow-700 to-yellow-500 h-full" style="width:7%"></div>
+        <div class="bg-gradient-to-r from-orange-700 to-orange-500 h-full" style="width:6%"></div>
+        <div class="bg-gradient-to-r from-red-800 to-red-500 h-full" style="width:6%"></div>
+        <div class="bg-gray-700 h-full" style="width:45%"></div>
+      </div>
+      <div class="flex justify-between mt-1.5 text-[10px] text-gray-500">
+        <span>魚頭 507B</span><span>魚身 596B</span><span>尾低 686B</span><span>尾高 775B</span><span>魚骨 1,193B</span>
+      </div>
+      <div class="relative h-0 mt-0.5">
+        <div class="absolute top-0 text-brand-gold text-[10px] font-bold" style="left:36%">▲ NT$2,270</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">基本資訊</h3>
+        <div class="space-y-3">
+          <div>
+            <span class="text-xs text-gray-500">目前股價</span>
+            <p class="text-2xl font-bold text-white font-mono mt-0.5">2,270</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">累積淨值</span>
+            <p class="text-lg font-semibold text-white font-mono mt-0.5">596.4<span class="text-gray-500 text-sm">B</span></p>
+          </div>
+          <div class="pt-2 border-t border-white/5 flex items-center justify-between">
+            <span class="text-xs text-gray-500">估值區間</span>
+            <span class="px-2 py-0.5 rounded-full bg-orange-900/50 text-orange-300 text-[11px] font-semibold">魚頭</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-gray-500">基本面</span>
+            <span class="px-2 py-0.5 rounded-full bg-green-900/60 text-green-300 text-[11px] font-semibold">低估</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col items-center justify-center text-center gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">混和信號</h3>
+        <div class="rounded-full bg-yellow-900/30 border-2 border-yellow-600/40 flex flex-col items-center justify-center" style="width:80px;height:80px">
+          <span class="text-xl font-black text-yellow-400 tracking-widest leading-none">持有</span>
+          <span class="text-[10px] font-semibold text-yellow-300/80 mt-0.5">HOLD</span>
+        </div>
+        <p class="text-[11px] text-gray-500 leading-relaxed max-w-[220px]">無明確信號匹配，維持中性立場觀望</p>
+      </div>
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">技術指標</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">市場狀態</span>
+            <span class="text-sm font-bold text-brand-blue">魚身</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚骨值 (MA20)</span>
+            <span class="text-sm font-bold text-white font-mono">NT$ 2,242</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">乖離率 (BIAS20)</span>
+            <span class="text-sm font-bold text-yellow-400 font-mono">1.24<span class="text-xs text-gray-500">%</span></span>
+          </div>
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-xs text-gray-400">趨勢強度 (ADX)</span>
+            <span class="text-sm font-bold text-brand-green font-mono">28.1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
+      <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-5">魚骨估值區間</h3>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-green-300 shrink-0">魚頭 0.85x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-green-900/60 via-green-700/40 to-green-500/30 rounded-md flex items-center pl-3" style="width:43%">
+              <span class="text-xs font-bold text-green-300 font-mono">507<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-yellow-300 shrink-0">魚身 1.00x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/60 via-yellow-700/40 to-yellow-500/30 rounded-md flex items-center pl-3" style="width:50%">
+              <span class="text-xs font-bold text-yellow-300 font-mono">596<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+            <div class="absolute top-1/2 -translate-y-1/2 w-0.5 h-10 bg-brand-gold" style="left:43%">
+              <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-brand-gold whitespace-nowrap">▼ 2,270</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-orange-300 shrink-0">尾低 1.15x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-orange-900/60 via-orange-700/40 to-orange-500/30 rounded-md flex items-center pl-3" style="width:58%">
+              <span class="text-xs font-bold text-orange-300 font-mono">686<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-red-300 shrink-0">尾高 1.30x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-red-900/60 via-red-700/40 to-red-500/30 rounded-md flex items-center pl-3" style="width:65%">
+              <span class="text-xs font-bold text-red-300 font-mono">775<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-gray-400 shrink-0">魚骨 2.00x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gray-700/50 rounded-md flex items-center pl-3" style="width:100%">
+              <span class="text-xs font-bold text-gray-400 font-mono">1,193<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center gap-2 text-[10px] text-gray-500">
+        <span class="inline-block w-2 h-2 rounded-full bg-brand-gold"></span>
+        <span>目前價位落於 <span class="text-orange-300 font-semibold">魚頭區</span> — 股價低於魚身淨值，顯示潛在低估</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">估值乘數</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚頭 (0.85x)</span>
+            <span class="text-xs font-bold text-green-300 font-mono">507.0B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚身 (1.00x)</span>
+            <span class="text-xs font-bold text-yellow-300 font-mono">596.4B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">尾低 (1.15x)</span>
+            <span class="text-xs font-bold text-orange-300 font-mono">685.9B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">尾高 (1.30x)</span>
+            <span class="text-xs font-bold text-red-300 font-mono">775.3B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-xs text-gray-400">魚骨 (2.00x)</span>
+            <span class="text-xs font-bold text-gray-400 font-mono">1,192.8B</span>
+          </div>
+        </div>
+        <div class="mt-2 p-3 bg-gray-800/50 rounded-lg border border-white/5">
+          <span class="text-[10px] text-gray-500">安全邊際 (Margin of Safety)</span>
+          <p class="text-lg font-bold text-brand-green font-mono mt-0.5">14.1<span class="text-sm text-gray-500">%</span></p>
+        </div>
+      </div>
+      <div class="md:col-span-2 bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">季度淨值累積表</h3>
+        <div class="overflow-x-auto -mx-1">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">季度</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">EPS</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">股利 (B)</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">累積淨值 (B)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+              <tr class="hover:bg-white/[0.02] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-gray-300">2026 Q1</td>
+                <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">22.08</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-400">129.7</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-brand-gold">129.7</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-gray-300">2025 Q4</td>
+                <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">19.50</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-400">129.7</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-300">259.3</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-gray-300">2025 Q3</td>
+                <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">17.44</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-400">116.7</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-300">376.0</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-gray-300">2025 Q2</td>
+                <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">15.36</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-400">116.7</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-300">492.7</td>
+              </tr>
+              <tr class="bg-yellow-400/[0.03] hover:bg-yellow-400/[0.06] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-yellow-300">2025 Q1 ⬅ 淨值基準</td>
+                <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">13.95</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-400">103.7</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-white">596.4</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors">
+                <td class="py-2.5 px-3 font-semibold text-gray-500">2024 Q4</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-500">14.45</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-600">0.0</td>
+                <td class="py-2.5 px-3 text-right font-mono text-gray-500">596.4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">估值曲線圖表</h3>
+        <span class="px-2 py-0.5 rounded-md bg-gray-800 text-[10px] text-gray-500 uppercase tracking-wider">Coming Soon</span>
+      </div>
+      <div class="relative rounded-lg bg-gray-800/50 border border-white/5 overflow-hidden h-[360px]">
+        <div class="absolute inset-0 opacity-[0.04]">
+          <div class="w-full h-px bg-white absolute" style="top:25%"></div>
+          <div class="w-full h-px bg-white absolute" style="top:50%"></div>
+          <div class="w-full h-px bg-white absolute" style="top:75%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:25%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:50%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:75%"></div>
+        </div>
+        <div class="flex items-center justify-center flex-col gap-3 h-[360px]">
+          <svg class="w-12 h-12 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 36 L16 24 L22 28 L32 12 L38 18 L42 10"/>
+            <circle cx="32" cy="12" r="2" fill="currentColor"/>
+            <circle cx="22" cy="28" r="2" fill="currentColor"/>
+          </svg>
+          <p class="text-sm text-gray-600 font-medium">魚骨估值曲線圖表將顯示於此</p>
+          <p class="text-[11px] text-gray-700">Fish-Bone Valuation Curve • Price vs. Zone Thresholds</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="flex flex-wrap items-center gap-4 text-[11px] text-gray-600 pt-2 pb-4">
+      <span class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-green"></span> Backend API: OK (port 8001)</span>
+      <span class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-green"></span> Frontend: OK (port 5174)</span>
+      <span class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-gold"></span> Signal: HOLD</span>
+      <span class="ml-auto text-gray-700">Fish-Bone Valuation Engine v1.0 • Data as of 2026-05-25</span>
+    </footer>
+  </main>
+</body>
+</html>
