@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TWS 台股分析儀表板 — 2330.TW 台積電</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { gold: '#e8ba40', green: '#3fb950', red: '#f85149', cyan: '#0fedbe', blue: '#58a6ff' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glow-gold { box-shadow: 0 0 30px -10px rgba(232,186,64,0.15); }
+    /* Loading pulse */
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .loading { animation: pulse-subtle 1.5s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-gray-950 min-h-screen text-gray-100 antialiased">
+
+  <!-- ===== HEADER ===== -->
+  <header class="sticky top-0 z-50 border-b border-white/5 bg-gray-950/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-brand-gold/20 flex items-center justify-center">
+          <span class="text-brand-gold font-black text-sm">T</span>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold tracking-tight text-white">TWS Stock Analysis</h1>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Fish-Bone Valuation Engine</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-xs text-gray-400">
+        <span id="api-status" class="flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> API: OK</span>
+        <span id="data-status" class="flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> Data: OK</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
+
+    <!-- ===== SEARCH BAR + RECENT STOCKS ===== -->
+    <div id="search-section" class="space-y-2">
+      <div class="relative">
+        <input id="stock-search" type="text" placeholder="輸入股票代碼或名稱（例如：2330、台積電）"
+          class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/30 transition-all">
+        <!-- Autocomplete dropdown -->
+        <div id="search-results" class="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-white/10 rounded-xl shadow-2xl z-50 hidden max-h-64 overflow-y-auto"></div>
+      </div>
+      <!-- Recent stocks pills -->
+      <div id="recent-stocks" class="flex gap-2 flex-wrap min-h-[28px]"></div>
+    </div>
+
+    <!-- ===== HERO CARD ===== -->
+    <div id="hero-card" class="bg-gray-900 border border-white/5 rounded-2xl p-6 sm:p-8 glow-gold loading">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span id="hero-symbol" class="px-2.5 py-0.5 rounded-md bg-brand-blue/15 text-brand-blue text-[11px] font-bold tracking-wide">2330.TW</span>
+            <span id="hero-fundamental-badge" class="px-2.5 py-0.5 rounded-full bg-green-900/60 text-green-300 text-[11px] font-semibold">低估</span>
+            <span id="hero-zone-badge" class="px-2.5 py-0.5 rounded-full bg-orange-900/50 text-orange-300 text-[11px] font-semibold">魚頭</span>
+          </div>
+          <h2 id="hero-price" class="text-4xl sm:text-5xl font-black tracking-tight text-white">NT$ 2,270</h2>
+          <p id="hero-name" class="text-sm text-gray-400 mt-1">Taiwan Semiconductor Manufacturing Co. (台積電)</p>
+        </div>
+        <div class="flex flex-col items-end gap-1">
+          <span class="text-[10px] uppercase tracking-widest text-gray-500">淨值 (Net Value)</span>
+          <span id="hero-net-value" class="text-2xl font-bold text-white font-mono">596.4<span class="text-gray-500 text-base">B</span></span>
+        </div>
+      </div>
+      <!-- Valuation progress bar -->
+      <div id="hero-bar-container" class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden flex">
+        <div class="bg-gradient-to-r from-green-700 to-green-500 h-full" style="width:36%"></div>
+        <div class="bg-gradient-to-r from-yellow-700 to-yellow-500 h-full" style="width:7%"></div>
+        <div class="bg-gradient-to-r from-orange-700 to-orange-500 h-full" style="width:6%"></div>
+        <div class="bg-gradient-to-r from-red-800 to-red-500 h-full" style="width:6%"></div>
+        <div class="bg-gray-700 h-full" style="width:45%"></div>
+      </div>
+      <div id="hero-zone-labels" class="flex justify-between mt-1.5 text-[10px] text-gray-500">
+        <span>魚頭 507B</span><span>魚身 596B</span><span>尾低 686B</span><span>尾高 775B</span><span>魚骨 1,193B</span>
+      </div>
+      <div class="relative h-0 mt-0.5">
+        <div id="hero-price-marker" class="absolute top-0 text-brand-gold text-[10px] font-bold" style="left:36%">▲ NT$2,270</div>
+      </div>
+    </div>
+
+    <!-- ===== INDUSTRY ANALYSIS ===== -->
+    <div id="industry-analysis" class="max-w-7xl">
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-3">產業分析</h3>
+        <p id="industry-text" class="text-sm text-gray-300 leading-relaxed">台灣半導體產業涵蓋 IC 設計、晶圓代工、封裝測試，為全球供應鏈核心。台積電為晶圓代工龍頭，聯發科為 IC 設計領導廠商。</p>
+      </div>
+    </div>
+
+    <!-- ===== 3-COLUMN GRID ===== -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+      <!-- Basic Info -->
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">基本資訊</h3>
+        <div class="space-y-3">
+          <div>
+            <span class="text-xs text-gray-500">目前股價</span>
+            <p id="info-price" class="text-2xl font-bold text-white font-mono mt-0.5">2,270</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500">累積淨值</span>
+            <p id="info-net-value" class="text-lg font-semibold text-white font-mono mt-0.5">596.4<span class="text-gray-500 text-sm">B</span></p>
+          </div>
+          <div class="pt-2 border-t border-white/5 flex items-center justify-between">
+            <span class="text-xs text-gray-500">估值區間</span>
+            <span id="info-zone" class="px-2 py-0.5 rounded-full bg-orange-900/50 text-orange-300 text-[11px] font-semibold">魚頭</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-gray-500">基本面</span>
+            <span id="info-fundamental" class="px-2 py-0.5 rounded-full bg-green-900/60 text-green-300 text-[11px] font-semibold">低估</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mixed Signal (HOLD) -->
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col items-center justify-center text-center gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">混合信號</h3>
+        <div id="signal-circle" class="rounded-full bg-yellow-900/30 border-2 border-yellow-600/40 flex flex-col items-center justify-center" style="width:80px;height:80px">
+          <span id="signal-text" class="text-xl font-black text-yellow-400 tracking-widest leading-none">持有</span>
+          <span id="signal-sub" class="text-[10px] font-semibold text-yellow-300/80 mt-0.5">HOLD</span>
+        </div>
+        <p id="signal-desc" class="text-[11px] text-gray-500 leading-relaxed max-w-[220px]">無明確信號匹配，維持中性立場觀望</p>
+      </div>
+
+      <!-- Technical Indicators -->
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">技術指標</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">市場狀態</span>
+            <span id="tech-state" class="text-sm font-bold text-brand-blue">魚身</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚骨值 (MA20)</span>
+            <span id="tech-bone" class="text-sm font-bold text-white font-mono">NT$ 2,242</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">乖離率 (BIAS20)</span>
+            <span id="tech-bias" class="text-sm font-bold text-yellow-400 font-mono">1.24<span class="text-xs text-gray-500">%</span></span>
+          </div>
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-xs text-gray-400">趨勢強度 (ADX)</span>
+            <span id="tech-adx" class="text-sm font-bold text-brand-green font-mono">28.1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FISH-BONE VALUATION ZONES ===== -->
+    <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
+      <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-5">魚骨估值區間</h3>
+      <div class="space-y-3">
+        <!-- Fish Head -->
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-green-300 shrink-0">魚頭 0.85x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div id="bar-fish-head" class="absolute inset-0 bg-gradient-to-r from-green-900/60 via-green-700/40 to-green-500/30 rounded-md flex items-center pl-3" style="width:43%">
+              <span id="val-fish-head" class="text-xs font-bold text-green-300 font-mono">507<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- Fish Body -->
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-yellow-300 shrink-0">魚身 1.00x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div id="bar-fish-body" class="absolute inset-0 bg-gradient-to-r from-yellow-900/60 via-yellow-700/40 to-yellow-500/30 rounded-md flex items-center pl-3" style="width:50%">
+              <span id="val-fish-body" class="text-xs font-bold text-yellow-300 font-mono">596<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+            <div id="price-marker-fish" class="absolute top-1/2 -translate-y-1/2 w-0.5 h-10 bg-brand-gold" style="left:43%">
+              <span id="price-marker-text" class="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-brand-gold whitespace-nowrap">▼ 2,270</span>
+            </div>
+          </div>
+        </div>
+        <!-- Fish Tail Low -->
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-orange-300 shrink-0">尾低 1.15x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div id="bar-fish-tail-low" class="absolute inset-0 bg-gradient-to-r from-orange-900/60 via-orange-700/40 to-orange-500/30 rounded-md flex items-center pl-3" style="width:58%">
+              <span id="val-fish-tail-low" class="text-xs font-bold text-orange-300 font-mono">686<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- Fish Tail High -->
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-red-300 shrink-0">尾高 1.30x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div id="bar-fish-tail-high" class="absolute inset-0 bg-gradient-to-r from-red-900/60 via-red-700/40 to-red-500/30 rounded-md flex items-center pl-3" style="width:65%">
+              <span id="val-fish-tail-high" class="text-xs font-bold text-red-300 font-mono">775<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- Fish Bone -->
+        <div class="flex items-center gap-3">
+          <span class="w-28 text-right text-[11px] font-semibold text-gray-400 shrink-0">魚骨 2.00x</span>
+          <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
+            <div id="bar-fish-bone" class="absolute inset-0 bg-gray-700/50 rounded-md flex items-center pl-3" style="width:100%">
+              <span id="val-fish-bone" class="text-xs font-bold text-gray-400 font-mono">1,193<span class="text-[10px] opacity-70">B</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center gap-2 text-[10px] text-gray-500">
+        <span class="inline-block w-2 h-2 rounded-full bg-brand-gold"></span>
+        <span id="fish-zone-desc">目前價位落於 <span class="text-orange-300 font-semibold">魚頭區</span> — 股價低於魚身淨值，顯示潛在低估</span>
+      </div>
+    </div>
+
+    <!-- ===== VALUATION MULTIPLIERS + QUARTERLY TABLE ===== -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <!-- Valuation Multipliers Card -->
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">估值乘數</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚頭 (0.85x)</span>
+            <span id="mult-fish-head" class="text-xs font-bold text-green-300 font-mono">507.0B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">魚身 (1.00x)</span>
+            <span id="mult-fish-body" class="text-xs font-bold text-yellow-300 font-mono">596.4B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">尾低 (1.15x)</span>
+            <span id="mult-fish-tail-low" class="text-xs font-bold text-orange-300 font-mono">685.9B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span class="text-xs text-gray-400">尾高 (1.30x)</span>
+            <span id="mult-fish-tail-high" class="text-xs font-bold text-red-300 font-mono">775.3B</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-xs text-gray-400">魚骨 (2.00x)</span>
+            <span id="mult-fish-bone" class="text-xs font-bold text-gray-400 font-mono">1,192.8B</span>
+          </div>
+        </div>
+        <div class="mt-2 p-3 bg-gray-800/50 rounded-lg border border-white/5">
+          <span class="text-[10px] text-gray-500">安全邊際 (Margin of Safety)</span>
+          <p id="margin-of-safety" class="text-lg font-bold text-brand-green font-mono mt-0.5">14.1<span class="text-sm text-gray-500">%</span></p>
+        </div>
+      </div>
+
+      <!-- Quarterly NAV Table -->
+      <div class="md:col-span-2 bg-gray-900 border border-white/5 rounded-xl p-5 flex flex-col gap-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">季度淨值累積表</h3>
+        <div class="overflow-x-auto -mx-1">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">季度</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">EPS</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">股利 (B)</th>
+                <th class="text-right py-2.5 px-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">累積淨值 (B)</th>
+              </tr>
+            </thead>
+            <tbody id="quarterly-tbody" class="divide-y divide-white/5">
+              <!-- Rows inserted by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== HEALTH CHECK CARD ===== -->
+    <div id="health-check-section" class="max-w-7xl">
+      <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">一鍵健檢</h3>
+          <span id="health-grade-badge" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+        </div>
+        <!-- 5 Dimension Bars -->
+        <div id="health-dimensions" class="space-y-3 loading">
+          <div class="text-xs text-gray-500 text-center py-4">載入健檢資料中...</div>
+        </div>
+        <!-- Total Score Gauge + Suggestion -->
+        <div class="mt-5 flex items-center gap-4">
+          <div id="health-total-circle" class="relative w-20 h-20 flex-shrink-0"></div>
+          <div>
+            <p id="health-suggestion" class="text-sm text-gray-300 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHART PLACEHOLDER ===== -->
+    <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500">估值曲線圖表</h3>
+        <span class="px-2 py-0.5 rounded-md bg-gray-800 text-[10px] text-gray-500 uppercase tracking-wider">Coming Soon</span>
+      </div>
+      <div class="relative rounded-lg bg-gray-800/50 border border-white/5 overflow-hidden h-[360px]">
+        <div class="absolute inset-0 opacity-[0.04]">
+          <div class="w-full h-px bg-white absolute" style="top:25%"></div>
+          <div class="w-full h-px bg-white absolute" style="top:50%"></div>
+          <div class="w-full h-px bg-white absolute" style="top:75%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:25%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:50%"></div>
+          <div class="h-full w-px bg-white absolute" style="left:75%"></div>
+        </div>
+        <div class="flex items-center justify-center flex-col gap-3 h-[360px]">
+          <svg class="w-12 h-12 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 36 L16 24 L22 28 L32 12 L38 18 L42 10"/>
+            <circle cx="32" cy="12" r="2" fill="currentColor"/>
+            <circle cx="22" cy="28" r="2" fill="currentColor"/>
+          </svg>
+          <p class="text-sm text-gray-600 font-medium">魚骨估值曲線圖表將顯示於此</p>
+          <p class="text-[11px] text-gray-700">Fish-Bone Valuation Curve • Price vs. Zone Thresholds</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="flex flex-wrap items-center gap-4 text-[11px] text-gray-600 pt-2 pb-4">
+      <span id="footer-api" class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-green"></span> Backend API: OK (port 8001)</span>
+      <span id="footer-frontend" class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-green"></span> Frontend: OK (port 5174)</span>
+      <span id="footer-signal" class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-gold"></span> Signal: HOLD</span>
+      <span id="footer-date" class="ml-auto text-gray-700">Fish-Bone Valuation Engine v3.0 • Data as of 2026-05-30</span>
+    </footer>
+
+  </main>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+  'use strict';
+
+  // ── Constants ──
+  const RECENT_KEY = 'tws_recent_stocks';
+  const DEBOUNCE_MS = 300;
+  const DEFAULT_STOCK = { code: '2330', name: '台積電', industry: '半導體' };
+
+  // Brand colors
+  const B = {
+    gold:   '#e8ba40',
+    green:  '#3fb950',
+    red:    '#f85149',
+    cyan:   '#0fedbe',
+    blue:   '#58a6ff',
+    yellow: '#e8ba40',
+    orange: '#d97706',
+  };
+
+  // ── Industry Analysis Text Map ──
+  const INDUSTRY_MAP = {
+    '半導體': '台灣半導體產業涵蓋 IC 設計、晶圓代工、封裝測試，為全球供應鏈核心。台積電為晶圓代工龍頭，聯發科為 IC 設計領導廠商。',
+    '電子零組件': '涵蓋 PCB、連接器、被動元件等，為電子產品基礎元件供應鏈。',
+    '金融保險': '台灣金融業以銀行、保險、證券為主體，受利率與政策監管影響顯著。',
+    '塑膠工業': '台塑集團為台灣塑化產業龍頭，產品涵蓋 PVC、PE、PP 等基礎原料。',
+    '鋼鐵工業': '中鋼為台灣一貫作業鋼廠，產品應用於建築、汽車、機械等領域。',
+    '航運業': '台灣航運業以貨櫃航運為主，長榮、陽明、萬海為三大龍頭。',
+    '通信網路': '中華電信為台灣最大電信營運商，提供固網、行動、寬頻服務。',
+    '其他電子': '鴻海為全球最大電子代工服務商，產品涵蓋伺服器、手機、汽車電子等。',
+    '光電': '大立光為全球手機鏡頭龍頭，技術領先於塑膠鏡片領域。',
+    '電腦及週邊': '涵蓋筆電、伺服器、電源供應器等，廣達、仁寶、緯創為主要代工廠。',
+  };
+
+  // ── Zone name mapping ──
+  const ZONE_NAMES = {
+    FISH_HEAD: '魚頭', FISH_BODY: '魚身', FISH_TAIL_LOW: '尾低',
+    FISH_TAIL_HIGH: '尾高', FISH_BONE: '魚骨',
+  };
+  const ZONE_COLORS = {
+    FISH_HEAD: 'green', FISH_BODY: 'yellow', FISH_TAIL_LOW: 'orange',
+    FISH_TAIL_HIGH: 'red', FISH_BONE: 'gray',
+    UNDEFINED: 'gray',
+  };
+  const FUNDAMENTAL_NAMES = {
+    UNDERVALUED: '低估', FAIR: '合理', OVERVALUED: '高估', BUBBLE: '泡沫',
+  };
+  const FUNDAMENTAL_COLORS = {
+    UNDERVALUED: 'green', FAIR: 'yellow', OVERVALUED: 'orange', BUBBLE: 'red',
+  };
+  const TECHNICAL_STATE_NAMES = {
+    FISH_HEAD: '魚頭', FISH_BODY: '魚身', FISH_TAIL: '魚尾',
+    BONE_BROKEN: '破骨', BULLISH: '多頭', NEUTRAL: '中性',
+    BEARISH: '空頭', OVEREXTENDED: '過伸',
+  };
+
+  // ── Utility helpers ──
+  function fmtB(val) {
+    if (val == null) return '—';
+    return parseFloat(val).toFixed(1) + 'B';
+  }
+  function fmtPrice(val) {
+    if (val == null) return '—';
+    return 'NT$ ' + Number(val).toLocaleString();
+  }
+  function fmtShortB(val) {
+    if (val == null) return '—';
+    return parseFloat(val).toFixed(0);
+  }
+  function fmtPct(a, b) {
+    if (!a || !b) return '—';
+    return ((a / b - 1) * 100).toFixed(1);
+  }
+
+  // ── localStorage recent stocks ──
+  function getRecent() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function addRecent(stock) {
+    let recent = getRecent().filter(s => s.code !== stock.code);
+    recent.unshift({ code: stock.code, name: stock.name || '', industry: stock.industry || '' });
+    recent = recent.slice(0, 3);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+    renderRecent();
+  }
+  function removeRecent(code) {
+    let recent = getRecent().filter(s => s.code !== code);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+    renderRecent();
+  }
+  function renderRecent() {
+    const container = document.getElementById('recent-stocks');
+    const recent = getRecent();
+    if (!recent.length) {
+      container.innerHTML = '<span class="text-[10px] text-gray-600 italic">尚無最近查詢</span>';
+      return;
+    }
+    container.innerHTML = recent.map(s => `
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-800 border border-white/5 text-xs cursor-pointer hover:bg-gray-700 hover:border-brand-gold/30 transition-colors group">
+        <span class="text-brand-blue font-semibold" onclick="selectStock('${s.code}','${s.name}','${s.industry}')">${s.code} ${s.name}</span>
+        <span class="text-gray-600 hover:text-brand-red cursor-pointer text-[10px] leading-none" onclick="event.stopPropagation();removeRecent('${s.code}')">&times;</span>
+      </span>
+    `).join('');
+  }
+
+  // ── Fetch API helpers ──
+  async function apiFetch(url) {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+    return resp.json();
+  }
+
+  // ── Search autocomplete ──
+  let searchTimer;
+  const searchInput = document.getElementById('stock-search');
+  const searchResults = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    const q = this.value.trim();
+    if (!q || q.length < 1) {
+      searchResults.classList.add('hidden');
+      return;
+    }
+    searchTimer = setTimeout(() => searchStocks(q), DEBOUNCE_MS);
+  });
+
+  searchInput.addEventListener('focus', function() {
+    if (searchResults.children.length > 0) searchResults.classList.remove('hidden');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.classList.add('hidden');
+    }
+  });
+
+  async function searchStocks(query) {
+    try {
+      const results = await apiFetch(`/api/stocks/search?q=${encodeURIComponent(query)}`);
+      renderSearchResults(results);
+    } catch (err) {
+      console.error('Search error:', err);
+      searchResults.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500">搜尋失敗，請稍後再試</div>';
+      searchResults.classList.remove('hidden');
+    }
+  }
+
+  function renderSearchResults(results) {
+    if (!results || !results.length) {
+      searchResults.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500">找不到相符的股票</div>';
+    } else {
+      searchResults.innerHTML = results.map(s => `
+        <div class="px-4 py-3 border-b border-white/5 hover:bg-white/[0.04] cursor-pointer transition-colors flex items-center gap-3"
+             onclick="selectStock('${s.code}','${s.name}','${s.industry || ''}')">
+          <span class="text-brand-blue font-bold text-sm font-mono">${s.code}</span>
+          <span class="text-white text-sm">${s.name}</span>
+          <span class="text-xs text-gray-500 ml-auto">${s.industry || ''}</span>
+        </div>
+      `).join('');
+    }
+    searchResults.classList.remove('hidden');
+  }
+
+  // ── Select stock ──
+  async function selectStock(code, name, industry) {
+    // Update page title
+    document.title = `TWS 台股分析儀表板 — ${code}.TW ${name}`;
+
+    // Close search
+    searchInput.value = '';
+    searchResults.classList.add('hidden');
+
+    // Set loading states
+    document.getElementById('hero-card').classList.add('loading');
+    document.getElementById('health-dimensions').classList.add('loading');
+    document.getElementById('health-dimensions').innerHTML = '<div class="text-xs text-gray-500 text-center py-4">載入健檢資料中...</div>';
+    document.getElementById('health-grade-badge').textContent = '';
+    document.getElementById('health-total-circle').innerHTML = '';
+    document.getElementById('health-suggestion').textContent = '';
+    document.getElementById('industry-text').textContent = '載入中...';
+
+    // Save to recent
+    addRecent({ code, name, industry });
+
+    // Update industry analysis
+    const indText = INDUSTRY_MAP[industry] || `此股票屬於${industry || '其他'}產業。`;
+    document.getElementById('industry-text').textContent = indText;
+
+    // Fetch valuation
+    try {
+      const valData = await apiFetch(`/api/valuation/${code}`);
+      updateValuationUI(code, name, industry, valData);
+    } catch (err) {
+      console.error('Valuation fetch error:', err);
+      setApiStatus(false);
+      // Fallback: keep existing data
+      document.getElementById('hero-card').classList.remove('loading');
+    }
+
+    // Fetch health check
+    try {
+      const hcData = await apiFetch(`/api/health-check/${code}`);
+      updateHealthCheckUI(hcData);
+    } catch (err) {
+      console.error('Health check fetch error:', err);
+      document.getElementById('health-dimensions').classList.remove('loading');
+      document.getElementById('health-dimensions').innerHTML = '<div class="text-xs text-gray-500 text-center py-4">健檢資料暫時無法取得</div>';
+    }
+  }
+
+  // ── Update valuation UI ──
+  function updateValuationUI(code, name, industry, data) {
+    const v = data.valuation;
+    const qg = data.quarterly_grid || [];
+    const fz = data.fundamental_zone;
+
+    setApiStatus(true);
+
+    // Hero Card
+    document.getElementById('hero-symbol').textContent = `${code}.TW`;
+    document.getElementById('hero-price').textContent = fmtPrice(v.price);
+    document.getElementById('hero-name').textContent = `${name || code}`;
+    document.getElementById('hero-net-value').innerHTML = fmtB(v.net_value).replace(/B$/, '<span class="text-gray-500 text-base">B</span>');
+
+    // Fundamental badge
+    const fzName = FUNDAMENTAL_NAMES[fz] || fz;
+    const fzColor = FUNDAMENTAL_COLORS[fz] || 'gray';
+    const fzBadge = document.getElementById('hero-fundamental-badge');
+    fzBadge.textContent = fzName;
+    fzBadge.className = `px-2.5 py-0.5 rounded-full bg-${fzColor}-900/60 text-${fzColor}-300 text-[11px] font-semibold`;
+
+    // Zone badge
+    const cz = v.current_zone;
+    const czName = ZONE_NAMES[cz] || cz;
+    const czColor = ZONE_COLORS[cz] || 'gray';
+    const czBadge = document.getElementById('hero-zone-badge');
+    czBadge.textContent = czName;
+    czBadge.className = `px-2.5 py-0.5 rounded-full bg-${czColor}-900/50 text-${czColor}-300 text-[11px] font-semibold`;
+
+    // Valuation progress bar
+    const z = v.zones;
+    const max = z.fish_bone || 1;
+    const intervals = [
+      { val: z.fish_head, w: (z.fish_head / max * 100), cls: 'from-green-700 to-green-500' },
+      { val: z.fish_body - z.fish_head, w: ((z.fish_body - z.fish_head) / max * 100), cls: 'from-yellow-700 to-yellow-500' },
+      { val: z.fish_tail_low - z.fish_body, w: ((z.fish_tail_low - z.fish_body) / max * 100), cls: 'from-orange-700 to-orange-500' },
+      { val: z.fish_tail_high - z.fish_tail_low, w: ((z.fish_tail_high - z.fish_tail_low) / max * 100), cls: 'from-red-800 to-red-500' },
+      { val: max - z.fish_tail_high, w: ((max - z.fish_tail_high) / max * 100), cls: 'from-gray-700 to-gray-700' },
+    ];
+    const barContainer = document.getElementById('hero-bar-container');
+    barContainer.innerHTML = intervals.map(s => {
+      const w = Math.max(s.w, 0).toFixed(1);
+      return `<div class="bg-gradient-to-r ${s.cls} h-full" style="width:${w}%"></div>`;
+    }).join('');
+
+    // Zone labels
+    document.getElementById('hero-zone-labels').innerHTML = [
+      { name: '魚頭', val: z.fish_head },
+      { name: '魚身', val: z.fish_body },
+      { name: '尾低', val: z.fish_tail_low },
+      { name: '尾高', val: z.fish_tail_high },
+      { name: '魚骨', val: z.fish_bone },
+    ].map(x => `<span>${x.name} ${fmtShortB(x.val)}B</span>`).join('');
+
+    // Price marker on progress bar
+    const pricePct = Math.min((v.price / max * 100), 100);
+    document.getElementById('hero-price-marker').style.left = pricePct.toFixed(1) + '%';
+    document.getElementById('hero-price-marker').textContent = '▲ ' + fmtPrice(v.price);
+
+    // 3-col: Basic Info
+    document.getElementById('info-price').textContent = Number(v.price).toLocaleString();
+    document.getElementById('info-net-value').innerHTML = fmtB(v.net_value).replace(/B$/, '<span class="text-gray-500 text-sm">B</span>');
+    document.getElementById('info-zone').textContent = czName;
+    document.getElementById('info-zone').className = `px-2 py-0.5 rounded-full bg-${czColor}-900/50 text-${czColor}-300 text-[11px] font-semibold`;
+    document.getElementById('info-fundamental').textContent = fzName;
+    document.getElementById('info-fundamental').className = `px-2 py-0.5 rounded-full bg-${fzColor}-900/60 text-${fzColor}-300 text-[11px] font-semibold`;
+
+    // 3-col: Mixed Signal (derived from fz + cz)
+    updateSignalDisplay(fz, cz);
+
+    // 3-col: Technical indicators
+    const techState = mapFundToTech(fz, cz);
+    document.getElementById('tech-state').textContent = TECHNICAL_STATE_NAMES[techState] || techState || '魚身';
+    document.getElementById('tech-bone').textContent = fmtPrice(z.fish_body);
+    const biasPct = fmtPct(v.price, z.fish_body);
+    document.getElementById('tech-bias').innerHTML = `${biasPct}<span class="text-xs text-gray-500">%</span>`;
+    document.getElementById('tech-adx').textContent = '28.1'; // static fallback
+
+    // Valuation zone bars (Fish-Bone)
+    const totalMax = z.fish_bone || 1;
+    updateZoneBar('bar-fish-head', 'val-fish-head', z.fish_head, totalMax, 'green');
+    updateZoneBar('bar-fish-body', 'val-fish-body', z.fish_body, totalMax, 'yellow');
+    updateZoneBar('bar-fish-tail-low', 'val-fish-tail-low', z.fish_tail_low, totalMax, 'orange');
+    updateZoneBar('bar-fish-tail-high', 'val-fish-tail-high', z.fish_tail_high, totalMax, 'red');
+    updateZoneBar('bar-fish-bone', 'val-fish-bone', z.fish_bone, totalMax, 'gray');
+
+    // Price marker on fish-body bar
+    const pbPct = (z.fish_body / totalMax * 100).toFixed(1);
+    const pMarker = document.getElementById('price-marker-fish');
+    pMarker.style.left = pbPct + '%';
+    document.getElementById('price-marker-text').textContent = '▼ ' + Number(v.price).toLocaleString();
+
+    // Valuation multipliers
+    document.getElementById('mult-fish-head').textContent = fmtB(z.fish_head);
+    document.getElementById('mult-fish-body').textContent = fmtB(z.fish_body);
+    document.getElementById('mult-fish-tail-low').textContent = fmtB(z.fish_tail_low);
+    document.getElementById('mult-fish-tail-high').textContent = fmtB(z.fish_tail_high);
+    document.getElementById('mult-fish-bone').textContent = fmtB(z.fish_bone);
+
+    // Margin of safety
+    const mos = ((1 - v.price / z.fish_body) * 100).toFixed(1);
+    const mosEl = document.getElementById('margin-of-safety');
+    const mosNum = parseFloat(mos);
+    mosEl.className = `text-lg font-bold font-mono mt-0.5 ${mosNum > 0 ? 'text-brand-green' : 'text-brand-red'}`;
+    mosEl.innerHTML = `${mos}<span class="text-sm text-gray-500">%</span>`;
+
+    // Quarterly table
+    renderQuarterlyTable(qg);
+
+    // Fish zone description
+    updateFishZoneDesc(cz, czName);
+
+    document.getElementById('hero-card').classList.remove('loading');
+  }
+
+  function updateZoneBar(barId, valId, value, total, color) {
+    const pct = (value / total * 100).toFixed(1);
+    const bar = document.getElementById(barId);
+    bar.style.width = pct + '%';
+    document.getElementById(valId).innerHTML = `${fmtShortB(value)}<span class="text-[10px] opacity-70">B</span>`;
+  }
+
+  function updateSignalDisplay(fz, cz) {
+    let signalText = '持有', signalSub = 'HOLD', signalColor = 'yellow',
+        circleBg = 'bg-yellow-900/30', circleBorder = 'border-yellow-600/40',
+        desc = '無明確信號匹配，維持中性立場觀望';
+
+    const isUndervalued = fz === 'UNDERVALUED';
+    const isOvervalued = fz === 'OVERVALUED' || fz === 'BUBBLE';
+    const isFair = fz === 'FAIR';
+    const isFishHeadOrBody = cz === 'FISH_HEAD' || cz === 'FISH_BODY';
+    const isFishTail = cz === 'FISH_TAIL_LOW' || cz === 'FISH_TAIL_HIGH' || cz === 'FISH_BONE';
+
+    if (isUndervalued && isFishHeadOrBody) {
+      signalText = '買入'; signalSub = 'BUY';
+      signalColor = 'green'; circleBg = 'bg-green-900/40'; circleBorder = 'border-green-600/40';
+      desc = '基本面低估且技術面在安全區間，逢低布局良機';
+    } else if (isOvervalued && isFishTail) {
+      signalText = '賣出'; signalSub = 'SELL';
+      signalColor = 'red'; circleBg = 'bg-red-900/40'; circleBorder = 'border-red-600/40';
+      desc = '基本面高估且技術面在過熱區，建議減碼';
+    } else if (isUndervalued && isFishTail) {
+      signalText = '觀望'; signalSub = 'WATCH';
+      signalColor = 'orange'; circleBg = 'bg-orange-900/40'; circleBorder = 'border-orange-600/40';
+      desc = '基本面低估但技術面過熱，等待回檔再進場';
+    } else if (isOvervalued && isFishHeadOrBody) {
+      signalText = '警戒'; signalSub = 'CAUTION';
+      signalColor = 'red'; circleBg = 'bg-red-900/30'; circleBorder = 'border-red-600/30';
+      desc = '技術面尚可但基本面已高估，謹慎持有';
+    }
+
+    document.getElementById('signal-text').textContent = signalText;
+    document.getElementById('signal-text').className = `text-xl font-black text-${signalColor}-400 tracking-widest leading-none`;
+    document.getElementById('signal-sub').textContent = signalSub;
+    document.getElementById('signal-sub').className = `text-[10px] font-semibold text-${signalColor}-300/80 mt-0.5`;
+    document.getElementById('signal-circle').className = `rounded-full ${circleBg} border-2 ${circleBorder} flex flex-col items-center justify-center`;
+    document.getElementById('signal-desc').textContent = desc;
+    // Footer signal
+    document.getElementById('footer-signal').innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-${signalColor}-400"></span> Signal: ${signalSub}`;
+  }
+
+  function mapFundToTech(fz, cz) {
+    if (cz === 'FISH_HEAD') return 'FISH_HEAD';
+    if (cz === 'FISH_BODY') return 'FISH_BODY';
+    if (cz === 'FISH_TAIL_LOW' || cz === 'FISH_TAIL_HIGH') return 'FISH_TAIL';
+    if (cz === 'FISH_BONE') return 'BONE_BROKEN';
+    return 'NEUTRAL';
+  }
+
+  function updateFishZoneDesc(cz, czName) {
+    const descMap = {
+      FISH_HEAD: `目前價位落於 <span class="text-green-300 font-semibold">${czName}區</span> — 股價低於魚身淨值，顯示潛在低估`,
+      FISH_BODY: `目前價位落於 <span class="text-yellow-300 font-semibold">${czName}區</span> — 股價接近合理淨值`,
+      FISH_TAIL_LOW: `目前價位落於 <span class="text-orange-300 font-semibold">${czName}區</span> — 股價略高於淨值，需注意估值`,
+      FISH_TAIL_HIGH: `目前價位落於 <span class="text-red-300 font-semibold">${czName}區</span> — 股價明顯高於淨值，謹慎評估`,
+      FISH_BONE: `目前價位落於 <span class="text-gray-400 font-semibold">${czName}區</span> — 股價遠高於淨值，風險偏高`,
+    };
+    document.getElementById('fish-zone-desc').innerHTML = descMap[cz] || `目前價位落於 <span class="text-orange-300 font-semibold">${czName}區</span>`;
+  }
+
+  function renderQuarterlyTable(quarters) {
+    const tbody = document.getElementById('quarterly-tbody');
+    if (!quarters || !quarters.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-600">暫無季度資料</td></tr>';
+      return;
+    }
+    // Show max 8 rows, sorted by year/quarter desc
+    const sorted = [...quarters].sort((a, b) => b.year - a.year || b.quarter - a.quarter).slice(0, 8);
+    tbody.innerHTML = sorted.map((q, i) => {
+      const label = `${q.year} Q${q.quarter}`;
+      const eps = q.eps != null ? parseFloat(q.eps).toFixed(2) : '—';
+      const div = q.dividends != null ? parseFloat(q.dividends).toFixed(1) : '—';
+      const acc = q.accumulated_net_value != null ? parseFloat(q.accumulated_net_value).toFixed(1) : '—';
+      const isBaseline = i === 4; // highlight the 5th row (baseline)
+      const rowClass = isBaseline ? 'bg-yellow-400/[0.03] hover:bg-yellow-400/[0.06]' : 'hover:bg-white/[0.02]';
+      const labelClass = isBaseline ? 'font-semibold text-yellow-300' : 'font-semibold text-gray-300';
+      const accClass = isBaseline ? 'font-bold text-white' : 'text-gray-300';
+      const extraLabel = isBaseline ? ' ⬅ 淨值基準' : '';
+      return `<tr class="${rowClass} transition-colors">
+        <td class="py-2.5 px-3 ${labelClass}">${label}${extraLabel}</td>
+        <td class="py-2.5 px-3 text-right font-mono font-semibold text-white">${eps}</td>
+        <td class="py-2.5 px-3 text-right font-mono text-gray-400">${div}</td>
+        <td class="py-2.5 px-3 text-right font-mono ${accClass}">${acc}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Update Health Check UI ──
+  function updateHealthCheckUI(data) {
+    const dims = data.dimensions || [];
+    const total = data.total_score || 0;
+    const grade = data.grade || '';
+    const suggestion = data.suggestion || '';
+
+    // Grade badge
+    const badge = document.getElementById('health-grade-badge');
+    let gradeEmoji = '⚖️';
+    let badgeColor = 'bg-yellow-900/50 text-yellow-300';
+    if (total >= 80) { gradeEmoji = '🚀'; badgeColor = 'bg-green-900/60 text-green-300'; }
+    else if (total >= 60) { gradeEmoji = '📈'; badgeColor = 'bg-blue-900/50 text-blue-300'; }
+    else if (total >= 40) { gradeEmoji = '⚖️'; badgeColor = 'bg-yellow-900/50 text-yellow-300'; }
+    else { gradeEmoji = '🚨'; badgeColor = 'bg-red-900/60 text-red-300'; }
+    badge.textContent = `${gradeEmoji} ${data.total_score}/100`;
+    badge.className = `px-3 py-1 rounded-full text-xs font-bold ${badgeColor}`;
+
+    // Dimension bars
+    const dimsContainer = document.getElementById('health-dimensions');
+    dimsContainer.classList.remove('loading');
+    dimsContainer.innerHTML = dims.map(d => {
+      const pct = (d.score / d.max_score * 100).toFixed(0);
+      let barColor = 'brand-green';
+      let textColor = 'text-green-300';
+      if (d.score <= 5) { barColor = 'brand-red'; textColor = 'text-red-300'; }
+      else if (d.score <= 10) { barColor = '#e8ba40'; textColor = 'text-yellow-300'; } // yellow
+      return `<div class="flex items-center gap-3">
+        <span class="w-24 text-right text-[11px] font-semibold text-gray-400 shrink-0">${d.name}</span>
+        <div class="flex-1 h-7 bg-gray-800 rounded-md relative overflow-hidden">
+          <div class="absolute inset-0 rounded-md" style="width:${pct}%;background:linear-gradient(to right,${barColor}99,${barColor}4d)"></div>
+          <span class="absolute inset-0 flex items-center pl-3 text-xs font-bold ${textColor}">${d.score}/${d.max_score} ${d.detail || ''}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    // SVG circular gauge
+    const circleContainer = document.getElementById('health-total-circle');
+    const circumference = 2 * Math.PI * 36; // radius 36
+    const strokePct = total / 100;
+    const offset = circumference * (1 - strokePct);
+    let gaugeColor = '#f85149';
+    if (total >= 80) gaugeColor = '#3fb950';
+    else if (total >= 60) gaugeColor = '#e8ba40';
+    else if (total >= 40) gaugeColor = '#d97706';
+    circleContainer.innerHTML = `
+      <svg viewBox="0 0 84 84" class="w-full h-full transform -rotate-90">
+        <circle cx="42" cy="42" r="36" fill="none" stroke="#1f2937" stroke-width="8"/>
+        <circle cx="42" cy="42" r="36" fill="none" stroke="${gaugeColor}" stroke-width="8"
+          stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span class="text-lg font-black text-white font-mono leading-none">${total}</span>
+        <span class="text-[10px] text-gray-500">/100</span>
+      </div>`;
+
+    // Suggestion
+    document.getElementById('health-suggestion').textContent = suggestion || grade;
+  }
+
+  function setApiStatus(ok) {
+    const apiEl = document.getElementById('api-status');
+    const dataEl = document.getElementById('data-status');
+    if (ok) {
+      apiEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> API: OK';
+      dataEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> Data: OK';
+    } else {
+      apiEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-red"></span> API: ERROR';
+      dataEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-red"></span> Data: ERROR';
+    }
+  }
+
+  // ── Initialization: load default stock (2330) ──
+  async function init() {
+    renderRecent();
+    try {
+      // Load default 2330 data
+      const valData = await apiFetch('/api/valuation/2330');
+      updateValuationUI('2330', '台積電', '半導體', valData);
+
+      const hcData = await apiFetch('/api/health-check/2330');
+      updateHealthCheckUI(hcData);
+    } catch (err) {
+      console.warn('Default data fetch failed, using static fallback:', err.message);
+      setApiStatus(false);
+      document.getElementById('hero-card').classList.remove('loading');
+      document.getElementById('health-dimensions').classList.remove('loading');
+      document.getElementById('health-dimensions').innerHTML = '<div class="text-xs text-gray-500 text-center py-4">請使用搜尋框查詢股票以載入資料</div>';
+    }
+  }
+
+  // Expose to global scope for inline onclick
+  window.selectStock = selectStock;
+  window.removeRecent = removeRecent;
+
+  init();
+  </script>
+
+</body>
+</html>

@@ -1,14 +1,17 @@
 """FastAPI 應用：GET /api/valuation/{symbol}"""
 
+import json
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from src.db.repository import StockRepository
 from src.db.schema import get_session_factory
+from src.scoring.engine import HealthCheckEngine
+from src.scoring.models import HealthCheckResult
 from src.services.hybrid_signal import HybridSignalService
 from src.valuation.models import HybridSignalResult, ValuationApiResponse
 
@@ -63,6 +66,44 @@ def get_hybrid_signal(symbol: str) -> HybridSignalResult:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    finally:
+        repo._session.close()
+
+
+def _load_stocks() -> list[dict]:
+    """從 twse_stocks.json 載入股票清單"""
+    stocks_path = PROJECT_ROOT / "src" / "data" / "twse_stocks.json"
+    if not stocks_path.is_file():
+        return []
+    with open(stocks_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@app.get("/api/stocks/search")
+def search_stocks(q: str = Query(default="", description="股票代碼或名稱關鍵字")):
+    """搜尋股票（代碼或名稱部分匹配，不分大小寫）"""
+    if not q:
+        return []
+    query = q.lower().strip()
+    stocks = _load_stocks()
+    results = []
+    for stock in stocks:
+        if query in stock["code"].lower() or query in stock["name"].lower():
+            results.append(stock)
+    return results[:10]
+
+
+@app.get("/api/health-check/{symbol}", response_model=HealthCheckResult)
+def health_check(symbol: str) -> HealthCheckResult:
+    """一鍵健檢評分"""
+    repo = _get_repo()
+    try:
+        sym = symbol.upper()
+        df = repo.get_price_bars_df(sym)
+        result = HealthCheckEngine.evaluate(df, stock_name=sym)
+        return result
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     finally:
         repo._session.close()
 
