@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.valuation.api import router as valuation_router
+from src.api.routes import router as api_router
 
 app = FastAPI(
     title="TWS Stock Analysis API",
@@ -19,6 +20,9 @@ app.add_middleware(
 
 # Include the valuation router
 app.include_router(valuation_router)
+
+# Include the API router (search + health-check)
+app.include_router(api_router)
 
 @app.get("/")
 async def root():
