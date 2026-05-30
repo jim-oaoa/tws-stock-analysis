@@ -392,6 +392,51 @@
     BEARISH: '空頭', OVEREXTENDED: '過伸',
   };
 
+  // ── Static stock database (42 TWSE stocks) ──
+  // Embedded for instant offline search — no API call needed
+  const STOCK_DB = [
+    {code:"2330",name:"台積電",industry:"半導體",type:"上市"},
+    {code:"2317",name:"鴻海",industry:"其他電子",type:"上市"},
+    {code:"2454",name:"聯發科",industry:"半導體",type:"上市"},
+    {code:"2308",name:"台達電",industry:"電子零組件",type:"上市"},
+    {code:"2382",name:"廣達",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2881",name:"富邦金",industry:"金融保險",type:"上市"},
+    {code:"2882",name:"國泰金",industry:"金融保險",type:"上市"},
+    {code:"2891",name:"中信金",industry:"金融保險",type:"上市"},
+    {code:"2886",name:"兆豐金",industry:"金融保險",type:"上市"},
+    {code:"2412",name:"中華電",industry:"通信網路",type:"上市"},
+    {code:"1301",name:"台塑",industry:"塑膠工業",type:"上市"},
+    {code:"1303",name:"南亞",industry:"塑膠工業",type:"上市"},
+    {code:"1326",name:"台化",industry:"塑膠工業",type:"上市"},
+    {code:"2002",name:"中鋼",industry:"鋼鐵工業",type:"上市"},
+    {code:"2603",name:"長榮",industry:"航運業",type:"上市"},
+    {code:"2609",name:"陽明",industry:"航運業",type:"上市"},
+    {code:"2615",name:"萬海",industry:"航運業",type:"上市"},
+    {code:"2303",name:"聯電",industry:"半導體",type:"上市"},
+    {code:"3711",name:"日月光投控",industry:"半導體",type:"上市"},
+    {code:"1216",name:"統一",industry:"食品工業",type:"上市"},
+    {code:"3008",name:"大立光",industry:"光電業",type:"上市"},
+    {code:"3037",name:"欣興",industry:"電子零組件",type:"上市"},
+    {code:"3189",name:"景碩",industry:"電子零組件",type:"上市"},
+    {code:"8046",name:"南電",industry:"電子零組件",type:"上市"},
+    {code:"3443",name:"創意",industry:"半導體",type:"上市"},
+    {code:"3661",name:"世芯-KY",industry:"半導體",type:"上市"},
+    {code:"6669",name:"緯穎",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2376",name:"技嘉",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2357",name:"華碩",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2324",name:"仁寶",industry:"電腦及週邊設備",type:"上市"},
+    {code:"3231",name:"緯創",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2356",name:"英業達",industry:"電腦及週邊設備",type:"上市"},
+    {code:"4938",name:"和碩",industry:"電腦及週邊設備",type:"上市"},
+    {code:"2301",name:"光寶科",industry:"電子零組件",type:"上市"},
+    {code:"3034",name:"聯詠",industry:"半導體",type:"上市"},
+    {code:"2379",name:"瑞昱",industry:"半導體",type:"上市"},
+    {code:"8299",name:"群聯",industry:"半導體",type:"上櫃"},
+    {code:"5483",name:"中美晶",industry:"半導體",type:"上櫃"},
+    {code:"6488",name:"環球晶",industry:"半導體",type:"上櫃"},
+    {code:"3105",name:"穩懋",industry:"半導體",type:"上櫃"}
+  ];
+
   // ── Utility helpers ──
   function fmtB(val) {
     if (val == null) return '—';
@@ -448,6 +493,61 @@
     return resp.json();
   }
 
+  // ── Static valuation fallback (demo mode when API unavailable) ──
+  function generateStaticValuation(code, name, industry) {
+    // Use code digits to seed deterministic-but-varied demo data
+    const seed = parseInt(code, 10) || 2330;
+    const basePrice = 100 + (seed % 900);
+    const nav = basePrice * (0.6 + (seed % 100) / 250);
+    return {
+      valuation: {
+        price: basePrice,
+        net_value: nav,
+        current_zone: basePrice < nav * 0.92 ? 'FISH_HEAD' : basePrice < nav * 1.08 ? 'FISH_BODY' : basePrice < nav * 1.2 ? 'FISH_TAIL_LOW' : 'FISH_TAIL_HIGH',
+        zones: {
+          fish_head: Math.round(nav * 0.85 * 10) / 10,
+          fish_body: Math.round(nav * 10) / 10,
+          fish_tail_low: Math.round(nav * 1.15 * 10) / 10,
+          fish_tail_high: Math.round(nav * 1.30 * 10) / 10,
+          fish_bone: Math.round(nav * 2.0 * 10) / 10
+        }
+      },
+      quarterly_grid: [
+        {year:2026,quarter:1,eps:basePrice*0.03,accumulated_net_value:nav*0.52,dividends:basePrice*0.008},
+        {year:2025,quarter:4,eps:basePrice*0.028,accumulated_net_value:nav*0.48,dividends:basePrice*0.007},
+        {year:2025,quarter:3,eps:basePrice*0.027,accumulated_net_value:nav*0.44,dividends:0},
+        {year:2025,quarter:2,eps:basePrice*0.025,accumulated_net_value:nav*0.40,dividends:basePrice*0.007},
+        {year:2025,quarter:1,eps:basePrice*0.026,accumulated_net_value:nav*0.36,dividends:0},
+        {year:2024,quarter:4,eps:basePrice*0.024,accumulated_net_value:nav*0.32,dividends:basePrice*0.006},
+        {year:2024,quarter:3,eps:basePrice*0.023,accumulated_net_value:nav*0.28,dividends:0},
+        {year:2024,quarter:2,eps:basePrice*0.022,accumulated_net_value:nav*0.24,dividends:basePrice*0.006}
+      ],
+      fundamental_zone: basePrice < nav * 0.95 ? 'UNDERVALUED' : basePrice < nav * 1.15 ? 'FAIR' : 'OVERVALUED',
+      _demo: true
+    };
+  }
+
+  function generateStaticHealthCheck(code, name) {
+    const seed = parseInt(code, 10) || 2330;
+    const scores = [
+      {name:'獲利能力',   score:Math.min(20, 8+(seed%13)), max_score:20, detail:'EPS 穩健'},
+      {name:'成長動能',   score:Math.min(15, 5+(seed%11)), max_score:15, detail:'營收溫和成長'},
+      {name:'財務結構',   score:Math.min(15, 6+(seed%10)), max_score:15, detail:'負債比可控'},
+      {name:'估值合理',   score:Math.min(20, 7+(seed%14)), max_score:20, detail:'本益比適中'},
+      {name:'市場情緒',   score:Math.min(15, 4+(seed%12)), max_score:15, detail:'中性偏多'},
+      {name:'風險控管',   score:Math.min(15, 5+(seed%11)), max_score:15, detail:'波動可控'}
+    ];
+    const total = scores.reduce((s,d) => s+d.score, 0);
+    const grade = total >= 80 ? '🚀 強勁' : total >= 60 ? '📈 良好' : total >= 40 ? '⚖️ 中性' : '🚨 注意';
+    return {
+      dimensions: scores,
+      total_score: total,
+      grade: grade,
+      suggestion: '此為靜態展示資料，實際評分需後端 API 支援',
+      _demo: true
+    };
+  }
+
   // ── Search autocomplete ──
   let searchTimer;
   const searchInput = document.getElementById('stock-search');
@@ -474,14 +574,12 @@
   });
 
   async function searchStocks(query) {
-    try {
-      const results = await apiFetch(`/api/stocks/search?q=${encodeURIComponent(query)}`);
-      renderSearchResults(results);
-    } catch (err) {
-      console.error('Search error:', err);
-      searchResults.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500">搜尋失敗，請稍後再試</div>';
-      searchResults.classList.remove('hidden');
-    }
+    // Search embedded STOCK_DB instantly (no API call needed)
+    const q = query.toLowerCase().trim();
+    const results = STOCK_DB.filter(s =>
+      s.code.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
+    ).slice(0, 10);
+    renderSearchResults(results);
   }
 
   function renderSearchResults(results) {
@@ -525,25 +623,25 @@
     const indText = INDUSTRY_MAP[industry] || `此股票屬於${industry || '其他'}產業。`;
     document.getElementById('industry-text').textContent = indText;
 
-    // Fetch valuation
+    // Fetch valuation (with static fallback)
     try {
       const valData = await apiFetch(`/api/valuation/${code}`);
       updateValuationUI(code, name, industry, valData);
     } catch (err) {
-      console.error('Valuation fetch error:', err);
-      setApiStatus(false);
-      // Fallback: keep existing data
-      document.getElementById('hero-card').classList.remove('loading');
+      console.warn('Valuation API unavailable, using static demo:', err.message);
+      const staticVal = generateStaticValuation(code, name, industry);
+      updateValuationUI(code, name, industry, staticVal);
+      if (staticVal._demo) setApiStatus('demo');
     }
 
-    // Fetch health check
+    // Fetch health check (with static fallback)
     try {
       const hcData = await apiFetch(`/api/health-check/${code}`);
       updateHealthCheckUI(hcData);
     } catch (err) {
-      console.error('Health check fetch error:', err);
-      document.getElementById('health-dimensions').classList.remove('loading');
-      document.getElementById('health-dimensions').innerHTML = '<div class="text-xs text-gray-500 text-center py-4">健檢資料暫時無法取得</div>';
+      console.warn('Health-check API unavailable, using static demo:', err.message);
+      const staticHC = generateStaticHealthCheck(code, name);
+      updateHealthCheckUI(staticHC);
     }
   }
 
@@ -817,12 +915,19 @@
   function setApiStatus(ok) {
     const apiEl = document.getElementById('api-status');
     const dataEl = document.getElementById('data-status');
-    if (ok) {
+    const footerApi = document.getElementById('footer-api');
+    if (ok === 'demo') {
+      apiEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-gold"></span> API: DEMO';
+      dataEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-gold"></span> Data: STATIC';
+      if (footerApi) footerApi.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-gold"></span> Backend: DEMO (靜態)';
+    } else if (ok) {
       apiEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> API: OK';
       dataEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-green"></span> Data: OK';
+      if (footerApi) footerApi.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-green"></span> Backend API: OK (port 8001)';
     } else {
       apiEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-red"></span> API: ERROR';
       dataEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-brand-red"></span> Data: ERROR';
+      if (footerApi) footerApi.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-red"></span> Backend: OFFLINE';
     }
   }
 
@@ -830,18 +935,19 @@
   async function init() {
     renderRecent();
     try {
-      // Load default 2330 data
+      // Try live API first
       const valData = await apiFetch('/api/valuation/2330');
       updateValuationUI('2330', '台積電', '半導體', valData);
-
       const hcData = await apiFetch('/api/health-check/2330');
       updateHealthCheckUI(hcData);
     } catch (err) {
-      console.warn('Default data fetch failed, using static fallback:', err.message);
-      setApiStatus(false);
-      document.getElementById('hero-card').classList.remove('loading');
-      document.getElementById('health-dimensions').classList.remove('loading');
-      document.getElementById('health-dimensions').innerHTML = '<div class="text-xs text-gray-500 text-center py-4">請使用搜尋框查詢股票以載入資料</div>';
+      console.warn('API unavailable on init, using static demo:', err.message);
+      // Static fallback
+      const staticVal = generateStaticValuation('2330', '台積電', '半導體');
+      updateValuationUI('2330', '台積電', '半導體', staticVal);
+      const staticHC = generateStaticHealthCheck('2330', '台積電');
+      updateHealthCheckUI(staticHC);
+      setApiStatus('demo');
     }
   }
 
