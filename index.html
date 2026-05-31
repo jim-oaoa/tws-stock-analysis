@@ -495,8 +495,11 @@
 
   // ── Real-time price from FinMind (CORS-enabled, free tier) ──
   async function fetchRealTimePrice(code) {
-    const today = new Date().toISOString().slice(0, 10);
-    const url = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${code}&start_date=${today}&token=`;
+    // Look back 7 days so weekends/holidays still return the last trading day
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    const weekAgo = d.toISOString().slice(0, 10);
+    const url = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${code}&start_date=${weekAgo}&token=`;
     try {
       const resp = await fetch(url);
       if (!resp.ok) return null;
