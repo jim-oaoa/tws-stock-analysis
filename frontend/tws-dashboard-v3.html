@@ -493,6 +493,28 @@
     return resp.json();
   }
 
+  // ── Real-time price from FinMind (CORS-enabled, free tier) ──
+  async function fetchRealTimePrice(code) {
+    const today = new Date().toISOString().slice(0, 10);
+    const url = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${code}&start_date=${today}&token=`;
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      if (data.data && data.data.length > 0) {
+        const latest = data.data[data.data.length - 1];
+        return {
+          price: parseFloat(latest.close),
+          date: latest.date,
+          source: 'finmind'
+        };
+      }
+    } catch (e) {
+      console.warn('FinMind fetch failed for', code, e.message);
+    }
+    return null;
+  }
+
   // ── Static valuation fallback (demo mode when API unavailable) ──
   function generateStaticValuation(code, name, industry) {
     // Use code digits to seed deterministic-but-varied demo data
@@ -623,16 +645,25 @@
     const indText = INDUSTRY_MAP[industry] || `此股票屬於${industry || '其他'}產業。`;
     document.getElementById('industry-text').textContent = indText;
 
-    // Fetch valuation (with static fallback)
+    // Fetch valuation (with static fallback + real-time price injection)
+    let valData = null;
     try {
-      const valData = await apiFetch(`/api/valuation/${code}`);
-      updateValuationUI(code, name, industry, valData);
+      valData = await apiFetch(`/api/valuation/${code}`);
     } catch (err) {
       console.warn('Valuation API unavailable, using static demo:', err.message);
-      const staticVal = generateStaticValuation(code, name, industry);
-      updateValuationUI(code, name, industry, staticVal);
-      if (staticVal._demo) setApiStatus('demo');
+      valData = generateStaticValuation(code, name, industry);
+      if (valData._demo) setApiStatus('demo');
     }
+
+    // Inject real-time price from FinMind
+    const rtPrice = await fetchRealTimePrice(code);
+    if (rtPrice && rtPrice.price > 0) {
+      valData.valuation.price = rtPrice.price;
+      valData._rt_price = rtPrice;
+      console.log(`📈 即時股價 ${code}: NT$${rtPrice.price} (${rtPrice.date})`);
+    }
+
+    updateValuationUI(code, name, industry, valData);
 
     // Fetch health check (with static fallback)
     try {
@@ -934,20 +965,33 @@
   // ── Initialization: load default stock (2330) ──
   async function init() {
     renderRecent();
+    let valData = null;
     try {
       // Try live API first
-      const valData = await apiFetch('/api/valuation/2330');
-      updateValuationUI('2330', '台積電', '半導體', valData);
+      valData = await apiFetch('/api/valuation/2330');
+    } catch (err) {
+      console.warn('API unavailable on init, using static demo:', err.message);
+      valData = generateStaticValuation('2330', '台積電', '半導體');
+      setApiStatus('demo');
+    }
+
+    // Inject real-time price
+    const rtPrice = await fetchRealTimePrice('2330');
+    if (rtPrice && rtPrice.price > 0) {
+      valData.valuation.price = rtPrice.price;
+      valData._rt_price = rtPrice;
+    }
+
+    updateValuationUI('2330', '台積電', '半導體', valData);
+
+    // Health check
+    try {
       const hcData = await apiFetch('/api/health-check/2330');
       updateHealthCheckUI(hcData);
     } catch (err) {
-      console.warn('API unavailable on init, using static demo:', err.message);
-      // Static fallback
-      const staticVal = generateStaticValuation('2330', '台積電', '半導體');
-      updateValuationUI('2330', '台積電', '半導體', staticVal);
+      console.warn('Health-check API unavailable:', err.message);
       const staticHC = generateStaticHealthCheck('2330', '台積電');
       updateHealthCheckUI(staticHC);
-      setApiStatus('demo');
     }
   }
 
