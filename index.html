@@ -91,7 +91,7 @@
         <div class="bg-gray-700 h-full" style="width:45%"></div>
       </div>
       <div id="hero-zone-labels" class="flex justify-between mt-1.5 text-[10px] text-gray-500">
-        <span>魚頭 507B</span><span>魚身 596B</span><span>尾低 686B</span><span>尾高 775B</span><span>魚骨 1,193B</span>
+        <span>魚頭 507B</span><span>魚身 596B</span><span>魚尾 686B</span><span>魚臂 775B</span><span>瘋狂價 1,193B</span>
       </div>
       <div class="relative h-0 mt-0.5">
         <div id="hero-price-marker" class="absolute top-0 text-brand-gold text-[10px] font-bold" style="left:36%">▲ NT$2,270</div>
@@ -151,7 +151,7 @@
             <span id="tech-state" class="text-sm font-bold text-brand-blue">魚身</span>
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span class="text-xs text-gray-400">魚骨值 (MA20)</span>
+            <span class="text-xs text-gray-400">基準值 (MA20)</span>
             <span id="tech-bone" class="text-sm font-bold text-white font-mono">NT$ 2,242</span>
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-white/5">
@@ -168,7 +168,7 @@
 
     <!-- ===== FISH-BONE VALUATION ZONES ===== -->
     <div class="bg-gray-900 border border-white/5 rounded-xl p-5 sm:p-6">
-      <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-5">魚骨估值區間</h3>
+      <h3 class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-5">ROE 動態估值區間</h3>
       <div class="space-y-3">
         <!-- Fish Head -->
         <div class="flex items-center gap-3">
@@ -191,30 +191,30 @@
             </div>
           </div>
         </div>
-        <!-- Fish Tail Low -->
+        <!-- Fish Tail -->
         <div class="flex items-center gap-3">
-          <span class="w-28 text-right text-[11px] font-semibold text-orange-300 shrink-0">尾低 1.15x</span>
+          <span class="w-28 text-right text-[11px] font-semibold text-orange-300 shrink-0">魚尾 +15%</span>
           <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
-            <div id="bar-fish-tail-low" class="absolute inset-0 bg-gradient-to-r from-orange-900/60 via-orange-700/40 to-orange-500/30 rounded-md flex items-center pl-3" style="width:58%">
-              <span id="val-fish-tail-low" class="text-xs font-bold text-orange-300 font-mono">686<span class="text-[10px] opacity-70">B</span></span>
+            <div id="bar-fish-tail" class="absolute inset-0 bg-gradient-to-r from-orange-900/60 via-orange-700/40 to-orange-500/30 rounded-md flex items-center pl-3" style="width:58%">
+              <span id="val-fish-tail" class="text-xs font-bold text-orange-300 font-mono">686<span class="text-[10px] opacity-70">B</span></span>
             </div>
           </div>
         </div>
-        <!-- Fish Tail High -->
+        <!-- Fish Arm -->
         <div class="flex items-center gap-3">
-          <span class="w-28 text-right text-[11px] font-semibold text-red-300 shrink-0">尾高 1.30x</span>
+          <span class="w-28 text-right text-[11px] font-semibold text-red-300 shrink-0">魚臂 +30%</span>
           <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
-            <div id="bar-fish-tail-high" class="absolute inset-0 bg-gradient-to-r from-red-900/60 via-red-700/40 to-red-500/30 rounded-md flex items-center pl-3" style="width:65%">
-              <span id="val-fish-tail-high" class="text-xs font-bold text-red-300 font-mono">775<span class="text-[10px] opacity-70">B</span></span>
+            <div id="bar-fish-arm" class="absolute inset-0 bg-gradient-to-r from-red-900/60 via-red-700/40 to-red-500/30 rounded-md flex items-center pl-3" style="width:65%">
+              <span id="val-fish-arm" class="text-xs font-bold text-red-300 font-mono">775<span class="text-[10px] opacity-70">B</span></span>
             </div>
           </div>
         </div>
-        <!-- Fish Bone -->
+        <!-- Crazy Price -->
         <div class="flex items-center gap-3">
-          <span class="w-28 text-right text-[11px] font-semibold text-gray-400 shrink-0">魚骨 2.00x</span>
+          <span class="w-28 text-right text-[11px] font-semibold text-gray-400 shrink-0">瘋狂價 +100%</span>
           <div class="flex-1 h-9 bg-gray-800 rounded-md relative overflow-hidden">
-            <div id="bar-fish-bone" class="absolute inset-0 bg-gray-700/50 rounded-md flex items-center pl-3" style="width:100%">
-              <span id="val-fish-bone" class="text-xs font-bold text-gray-400 font-mono">1,193<span class="text-[10px] opacity-70">B</span></span>
+            <div id="bar-fish-crazy" class="absolute inset-0 bg-gray-700/50 rounded-md flex items-center pl-3" style="width:100%">
+              <span id="val-fish-crazy" class="text-xs font-bold text-gray-400 font-mono">1,193<span class="text-[10px] opacity-70">B</span></span>
             </div>
           </div>
         </div>
@@ -240,16 +240,16 @@
             <span id="mult-fish-body" class="text-xs font-bold text-yellow-300 font-mono">596.4B</span>
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span class="text-xs text-gray-400">尾低 (1.15x)</span>
-            <span id="mult-fish-tail-low" class="text-xs font-bold text-orange-300 font-mono">685.9B</span>
+            <span class="text-xs text-gray-400">魚尾 (-15% ~ +15%)</span>
+            <span id="mult-fish-tail" class="text-xs font-bold text-orange-300 font-mono">685.9B</span>
           </div>
           <div class="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span class="text-xs text-gray-400">尾高 (1.30x)</span>
-            <span id="mult-fish-tail-high" class="text-xs font-bold text-red-300 font-mono">775.3B</span>
+            <span class="text-xs text-gray-400">魚臂 (+15% ~ +30%)</span>
+            <span id="mult-fish-arm" class="text-xs font-bold text-red-300 font-mono">775.3B</span>
           </div>
           <div class="flex justify-between items-center py-1.5">
-            <span class="text-xs text-gray-400">魚骨 (2.00x)</span>
-            <span id="mult-fish-bone" class="text-xs font-bold text-gray-400 font-mono">1,192.8B</span>
+            <span class="text-xs text-gray-400">瘋狂價 (>+100%)</span>
+            <span id="mult-fish-crazy" class="text-xs font-bold text-gray-400 font-mono">1,192.8B</span>
           </div>
         </div>
         <div class="mt-2 p-3 bg-gray-800/50 rounded-lg border border-white/5">
@@ -321,7 +321,7 @@
             <circle cx="32" cy="12" r="2" fill="currentColor"/>
             <circle cx="22" cy="28" r="2" fill="currentColor"/>
           </svg>
-          <p class="text-sm text-gray-600 font-medium">魚骨估值曲線圖表將顯示於此</p>
+          <p class="text-sm text-gray-600 font-medium">ROE 動態估值曲線圖表將顯示於此</p>
           <p class="text-[11px] text-gray-700">Fish-Bone Valuation Curve • Price vs. Zone Thresholds</p>
         </div>
       </div>
@@ -373,12 +373,12 @@
 
   // ── Zone name mapping ──
   const ZONE_NAMES = {
-    FISH_HEAD: '魚頭', FISH_BODY: '魚身', FISH_TAIL_LOW: '尾低',
-    FISH_TAIL_HIGH: '尾高', FISH_BONE: '魚骨',
+    FISH_HEAD: '魚頭', FISH_BODY: '魚身', FISH_TAIL: '魚尾',
+    FISH_ARM: '魚臂', CRAZY_PRICE: '瘋狂價',
   };
   const ZONE_COLORS = {
-    FISH_HEAD: 'green', FISH_BODY: 'yellow', FISH_TAIL_LOW: 'orange',
-    FISH_TAIL_HIGH: 'red', FISH_BONE: 'gray',
+    FISH_HEAD: 'green', FISH_BODY: 'yellow', FISH_TAIL: 'orange',
+    FISH_ARM: 'red', CRAZY_PRICE: 'gray',
     UNDEFINED: 'gray',
   };
   const FUNDAMENTAL_NAMES = {
@@ -521,34 +521,84 @@
 
   // ── Static valuation fallback (demo mode when API unavailable) ──
   function generateStaticValuation(code, name, industry) {
-    // Use code digits to seed deterministic-but-varied demo data
+    // ROE-driven dynamic base-value model
     const seed = parseInt(code, 10) || 2330;
-    const basePrice = 100 + (seed % 900);
-    const nav = basePrice * (0.6 + (seed % 100) / 250);
+
+    // Adjusted Net Worth: (Equity - OCI) / Shares (seed-based demo)
+    const adjNW = 30 + (seed % 200);  // NT$30-230 range for demonstration
+
+    // Adjusted ROE: Past 4Q profit / prior adjusted equity (seed-based)
+    const adjROE = (5 + (seed % 25)) / 100;  // 5% to 29%
+
+    // Base value per ROE tier
+    let baseVal, roeTier;
+    if (adjROE >= 0.10) {
+      baseVal = adjNW * adjROE * 10;
+      roeTier = 'high';
+    } else if (adjROE >= 0.08) {
+      baseVal = adjNW;
+      roeTier = 'mid';
+    } else {
+      baseVal = adjNW * (adjROE + 0.02) * 10;
+      roeTier = 'low';
+    }
+    baseVal = Math.round(baseVal * 10) / 10;
+
+    // Use the real-time price if available, otherwise seed-based
+    const demoPrice = adjNW * (0.7 + (seed % 60) / 100);
+
+    // Zones from dynamic base value
+    const zones = {
+      fish_head: Math.round(baseVal * 0.85 * 10) / 10,
+      fish_body: Math.round(baseVal * 10) / 10,
+      fish_tail: Math.round(baseVal * 1.15 * 10) / 10,
+      fish_arm: Math.round(baseVal * 1.30 * 10) / 10,
+      crazy_price: Math.round(baseVal * 2.00 * 10) / 10
+    };
+
+    // Determine current zone
+    let currentZone;
+    if (demoPrice >= zones.crazy_price) currentZone = 'CRAZY_PRICE';
+    else if (demoPrice >= zones.fish_arm) currentZone = 'FISH_ARM';
+    else if (demoPrice >= zones.fish_tail) currentZone = 'FISH_TAIL';
+    else if (demoPrice >= zones.fish_body) currentZone = 'FISH_BODY';
+    else currentZone = 'FISH_HEAD';
+
+    // Fundamental zone
+    let fz;
+    if (demoPrice >= zones.crazy_price) fz = 'BUBBLE';
+    else if (demoPrice >= zones.fish_arm) fz = 'OVERVALUED';
+    else if (demoPrice >= zones.fish_body) fz = 'FAIR';
+    else fz = 'UNDERVALUED';
+
     return {
       valuation: {
-        price: basePrice,
-        net_value: nav,
-        current_zone: basePrice < nav * 0.92 ? 'FISH_HEAD' : basePrice < nav * 1.08 ? 'FISH_BODY' : basePrice < nav * 1.2 ? 'FISH_TAIL_LOW' : 'FISH_TAIL_HIGH',
-        zones: {
-          fish_head: Math.round(nav * 0.85 * 10) / 10,
-          fish_body: Math.round(nav * 10) / 10,
-          fish_tail_low: Math.round(nav * 1.15 * 10) / 10,
-          fish_tail_high: Math.round(nav * 1.30 * 10) / 10,
-          fish_bone: Math.round(nav * 2.0 * 10) / 10
-        }
+        price: demoPrice,
+        net_value: Math.round(adjNW * 0.8 * 10) / 10,
+        adjusted_net_worth: adjNW,
+        adjusted_roe: Math.round(adjROE * 10000) / 10000,
+        roe_tier: roeTier,
+        base_value: baseVal,
+        zones: zones,
+        current_zone: currentZone
       },
       quarterly_grid: [
-        {year:2026,quarter:1,eps:basePrice*0.03,accumulated_net_value:nav*0.52,dividends:basePrice*0.008},
-        {year:2025,quarter:4,eps:basePrice*0.028,accumulated_net_value:nav*0.48,dividends:basePrice*0.007},
-        {year:2025,quarter:3,eps:basePrice*0.027,accumulated_net_value:nav*0.44,dividends:0},
-        {year:2025,quarter:2,eps:basePrice*0.025,accumulated_net_value:nav*0.40,dividends:basePrice*0.007},
-        {year:2025,quarter:1,eps:basePrice*0.026,accumulated_net_value:nav*0.36,dividends:0},
-        {year:2024,quarter:4,eps:basePrice*0.024,accumulated_net_value:nav*0.32,dividends:basePrice*0.006},
-        {year:2024,quarter:3,eps:basePrice*0.023,accumulated_net_value:nav*0.28,dividends:0},
-        {year:2024,quarter:2,eps:basePrice*0.022,accumulated_net_value:nav*0.24,dividends:basePrice*0.006}
+        {year:2026,quarter:1,eps:adjNW*0.12,accumulated_net_value:adjNW*0.52,dividends:adjNW*0.03},
+        {year:2025,quarter:4,eps:adjNW*0.11,accumulated_net_value:adjNW*0.48,dividends:adjNW*0.03},
+        {year:2025,quarter:3,eps:adjNW*0.10,accumulated_net_value:adjNW*0.44,dividends:0},
+        {year:2025,quarter:2,eps:adjNW*0.10,accumulated_net_value:adjNW*0.40,dividends:adjNW*0.03},
+        {year:2025,quarter:1,eps:adjNW*0.09,accumulated_net_value:adjNW*0.36,dividends:0},
+        {year:2024,quarter:4,eps:adjNW*0.09,accumulated_net_value:adjNW*0.32,dividends:adjNW*0.02},
+        {year:2024,quarter:3,eps:adjNW*0.08,accumulated_net_value:adjNW*0.28,dividends:0},
+        {year:2024,quarter:2,eps:adjNW*0.08,accumulated_net_value:adjNW*0.24,dividends:adjNW*0.02}
       ],
-      fundamental_zone: basePrice < nav * 0.95 ? 'UNDERVALUED' : basePrice < nav * 1.15 ? 'FAIR' : 'OVERVALUED',
+      fundamental_zone: fz,
+      adjusted_metrics: {
+        adjusted_net_worth: adjNW,
+        adjusted_roe: Math.round(adjROE * 10000) / 10000,
+        roe_tier: roeTier,
+        base_value: baseVal
+      },
       _demo: true
     };
   }
@@ -726,13 +776,13 @@
 
     // Valuation progress bar
     const z = v.zones;
-    const max = z.fish_bone || 1;
+    const max = z.crazy_price || 1;
     const intervals = [
       { val: z.fish_head, w: (z.fish_head / max * 100), cls: 'from-green-700 to-green-500' },
       { val: z.fish_body - z.fish_head, w: ((z.fish_body - z.fish_head) / max * 100), cls: 'from-yellow-700 to-yellow-500' },
-      { val: z.fish_tail_low - z.fish_body, w: ((z.fish_tail_low - z.fish_body) / max * 100), cls: 'from-orange-700 to-orange-500' },
-      { val: z.fish_tail_high - z.fish_tail_low, w: ((z.fish_tail_high - z.fish_tail_low) / max * 100), cls: 'from-red-800 to-red-500' },
-      { val: max - z.fish_tail_high, w: ((max - z.fish_tail_high) / max * 100), cls: 'from-gray-700 to-gray-700' },
+      { val: z.fish_tail - z.fish_body, w: ((z.fish_tail - z.fish_body) / max * 100), cls: 'from-orange-700 to-orange-500' },
+      { val: z.fish_arm - z.fish_tail, w: ((z.fish_arm - z.fish_tail) / max * 100), cls: 'from-red-800 to-red-500' },
+      { val: max - z.fish_arm, w: ((max - z.fish_arm) / max * 100), cls: 'from-gray-700 to-gray-700' },
     ];
     const barContainer = document.getElementById('hero-bar-container');
     barContainer.innerHTML = intervals.map(s => {
@@ -744,9 +794,9 @@
     document.getElementById('hero-zone-labels').innerHTML = [
       { name: '魚頭', val: z.fish_head },
       { name: '魚身', val: z.fish_body },
-      { name: '尾低', val: z.fish_tail_low },
-      { name: '尾高', val: z.fish_tail_high },
-      { name: '魚骨', val: z.fish_bone },
+      { name: '魚尾', val: z.fish_tail },
+      { name: '魚臂', val: z.fish_arm },
+      { name: '瘋狂價', val: z.crazy_price },
     ].map(x => `<span>${x.name} ${fmtShortB(x.val)}B</span>`).join('');
 
     // Price marker on progress bar
@@ -774,12 +824,12 @@
     document.getElementById('tech-adx').textContent = '28.1'; // static fallback
 
     // Valuation zone bars (Fish-Bone)
-    const totalMax = z.fish_bone || 1;
+    const totalMax = z.crazy_price || 1;
     updateZoneBar('bar-fish-head', 'val-fish-head', z.fish_head, totalMax, 'green');
     updateZoneBar('bar-fish-body', 'val-fish-body', z.fish_body, totalMax, 'yellow');
-    updateZoneBar('bar-fish-tail-low', 'val-fish-tail-low', z.fish_tail_low, totalMax, 'orange');
-    updateZoneBar('bar-fish-tail-high', 'val-fish-tail-high', z.fish_tail_high, totalMax, 'red');
-    updateZoneBar('bar-fish-bone', 'val-fish-bone', z.fish_bone, totalMax, 'gray');
+    updateZoneBar('bar-fish-tail', 'val-fish-tail', z.fish_tail, totalMax, 'orange');
+    updateZoneBar('bar-fish-arm', 'val-fish-arm', z.fish_arm, totalMax, 'red');
+    updateZoneBar('bar-fish-crazy', 'val-fish-crazy', z.crazy_price, totalMax, 'gray');
 
     // Price marker on fish-body bar
     const pbPct = (z.fish_body / totalMax * 100).toFixed(1);
@@ -790,9 +840,9 @@
     // Valuation multipliers
     document.getElementById('mult-fish-head').textContent = fmtB(z.fish_head);
     document.getElementById('mult-fish-body').textContent = fmtB(z.fish_body);
-    document.getElementById('mult-fish-tail-low').textContent = fmtB(z.fish_tail_low);
-    document.getElementById('mult-fish-tail-high').textContent = fmtB(z.fish_tail_high);
-    document.getElementById('mult-fish-bone').textContent = fmtB(z.fish_bone);
+    document.getElementById('mult-fish-tail').textContent = fmtB(z.fish_tail);
+    document.getElementById('mult-fish-arm').textContent = fmtB(z.fish_arm);
+    document.getElementById('mult-fish-crazy').textContent = fmtB(z.crazy_price);
 
     // Margin of safety
     const mos = ((1 - v.price / z.fish_body) * 100).toFixed(1);
@@ -824,23 +874,22 @@
 
     const isUndervalued = fz === 'UNDERVALUED';
     const isOvervalued = fz === 'OVERVALUED' || fz === 'BUBBLE';
-    const isFair = fz === 'FAIR';
-    const isFishHeadOrBody = cz === 'FISH_HEAD' || cz === 'FISH_BODY';
-    const isFishTail = cz === 'FISH_TAIL_LOW' || cz === 'FISH_TAIL_HIGH' || cz === 'FISH_BONE';
+    const isSafe = cz === 'FISH_HEAD' || cz === 'FISH_BODY';
+    const isRisky = cz === 'FISH_TAIL' || cz === 'FISH_ARM' || cz === 'CRAZY_PRICE';
 
-    if (isUndervalued && isFishHeadOrBody) {
+    if (isUndervalued && isSafe) {
       signalText = '買入'; signalSub = 'BUY';
       signalColor = 'green'; circleBg = 'bg-green-900/40'; circleBorder = 'border-green-600/40';
-      desc = '基本面低估且技術面在安全區間，逢低布局良機';
-    } else if (isOvervalued && isFishTail) {
+      desc = 'ROE驅動基準值顯示低估，且價位在安全區間，逢低布局良機';
+    } else if (isOvervalued && isRisky) {
       signalText = '賣出'; signalSub = 'SELL';
       signalColor = 'red'; circleBg = 'bg-red-900/40'; circleBorder = 'border-red-600/40';
-      desc = '基本面高估且技術面在過熱區，建議減碼';
-    } else if (isUndervalued && isFishTail) {
+      desc = '基本面高於合理區間且價位在風險區，建議減碼';
+    } else if (isUndervalued && isRisky) {
       signalText = '觀望'; signalSub = 'WATCH';
       signalColor = 'orange'; circleBg = 'bg-orange-900/40'; circleBorder = 'border-orange-600/40';
-      desc = '基本面低估但技術面過熱，等待回檔再進場';
-    } else if (isOvervalued && isFishHeadOrBody) {
+      desc = '基本面低估但價位已高於基準值，等待回檔再進場';
+    } else if (isOvervalued && isSafe) {
       signalText = '警戒'; signalSub = 'CAUTION';
       signalColor = 'red'; circleBg = 'bg-red-900/30'; circleBorder = 'border-red-600/30';
       desc = '技術面尚可但基本面已高估，謹慎持有';
@@ -859,18 +908,19 @@
   function mapFundToTech(fz, cz) {
     if (cz === 'FISH_HEAD') return 'FISH_HEAD';
     if (cz === 'FISH_BODY') return 'FISH_BODY';
-    if (cz === 'FISH_TAIL_LOW' || cz === 'FISH_TAIL_HIGH') return 'FISH_TAIL';
-    if (cz === 'FISH_BONE') return 'BONE_BROKEN';
+    if (cz === 'FISH_TAIL') return 'FISH_TAIL';
+    if (cz === 'FISH_ARM') return 'FISH_TAIL';
+    if (cz === 'CRAZY_PRICE') return 'BONE_BROKEN';
     return 'NEUTRAL';
   }
 
   function updateFishZoneDesc(cz, czName) {
     const descMap = {
-      FISH_HEAD: `目前價位落於 <span class="text-green-300 font-semibold">${czName}區</span> — 股價低於魚身淨值，顯示潛在低估`,
-      FISH_BODY: `目前價位落於 <span class="text-yellow-300 font-semibold">${czName}區</span> — 股價接近合理淨值`,
-      FISH_TAIL_LOW: `目前價位落於 <span class="text-orange-300 font-semibold">${czName}區</span> — 股價略高於淨值，需注意估值`,
-      FISH_TAIL_HIGH: `目前價位落於 <span class="text-red-300 font-semibold">${czName}區</span> — 股價明顯高於淨值，謹慎評估`,
-      FISH_BONE: `目前價位落於 <span class="text-gray-400 font-semibold">${czName}區</span> — 股價遠高於淨值，風險偏高`,
+      FISH_HEAD: `目前價位落於 <span class="text-green-300 font-semibold">${czName}區</span> — 低於基準值 15% 內，ROE 模型顯示潛在低估`,
+      FISH_BODY: `目前價位落於 <span class="text-yellow-300 font-semibold">${czName}區</span> — 接近 ROE 動態基準值`,
+      FISH_TAIL: `目前價位落於 <span class="text-orange-300 font-semibold">${czName}區</span> — 高於基準值 15%，需注意估值`,
+      FISH_ARM: `目前價位落於 <span class="text-red-300 font-semibold">${czName}區</span> — 高於基準值 30%，不建議買入`,
+      CRAZY_PRICE: `目前價位落於 <span class="text-gray-400 font-semibold">${czName}區</span> — 高於基準值 100%，建議賣出`,
     };
     document.getElementById('fish-zone-desc').innerHTML = descMap[cz] || `目前價位落於 <span class="text-orange-300 font-semibold">${czName}區</span>`;
   }
